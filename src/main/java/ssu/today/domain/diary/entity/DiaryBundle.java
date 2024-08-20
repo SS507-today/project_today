@@ -19,7 +19,7 @@ import ssu.today.domain.shareGroup.entity.ShareGroup;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "diaryBundles")
+@Table(name = "diary_bundles")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -20,7 +20,7 @@ import ssu.today.domain.shareGroup.entity.ShareGroup;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "diaryTags")
+@Table(name = "diary_tags")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

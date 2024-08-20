@@ -17,7 +17,7 @@ import org.hibernate.annotations.SQLRestriction;
 import ssu.today.global.entity.BaseTimeEntity;
 
 @Entity
-@Table(name = "shareGroups")
+@Table(name = "share_groups")
 @SQLRestriction("deleted_at is NULL")
 @Getter
 @Builder
@@ -30,7 +30,7 @@ public class ShareGroup extends BaseTimeEntity {
     private Long id;
     @Column(name = "name", length = 15, nullable = false)
     private String name;
-    @Column(name = "name", length = 50)
+    @Column(name = "description", length = 50)
     private String description;
     @Column(name = "max_members", nullable = false)
     private int maxMembers;
