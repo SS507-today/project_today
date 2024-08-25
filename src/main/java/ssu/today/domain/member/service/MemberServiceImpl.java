@@ -27,7 +27,6 @@ public class MemberServiceImpl implements MemberService {
     @Value("${jwt.access-token-validity-in-seconds}")
     private Long ACCESS_TOKEN_VALIDITY_IN_SECONDS;
 
-
     private final MemberRepository memberRepository;
     private final MemberConverter memberConverter;
 

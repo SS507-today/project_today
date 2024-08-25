@@ -20,8 +20,6 @@ public class SecurityConfig {
     private final MemberService memberService;
     private final JwtUtils jwtUtils;
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
