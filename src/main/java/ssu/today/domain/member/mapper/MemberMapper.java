@@ -1,8 +1,10 @@
-package ssu.today.domain.member.service;
+package ssu.today.domain.member.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import ssu.today.domain.member.dto.MemberResponse;
 
-public interface MemberService {
+@Mapper
+public interface MemberMapper {
     void save(MemberResponse.LoginInfo loginInfo);
     MemberResponse.LoginInfo findById(Long id);
     MemberResponse.LoginInfo findByRefreshToken(String refreshToken);

@@ -21,11 +21,12 @@ spring:
 
 jwt:
   secret: ittodaydaytotodaytodaodititodyaot
-  access-token-validity-in-seconds: 604800 # 편의를 위해 1주일로 세팅.
-  # refresh-token-validity-in-seconds: 604800 # 1주일
+  access-token-validity-in-seconds: 3600 # 1시간
+  refresh-token-validity-in-seconds: 604800 # 1주일
 
-#mybatis:
-#  mapper-locations: classpath:mapper
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: ssu.today.domain.member.dto
 
 springdoc:
   swagger-ui:
