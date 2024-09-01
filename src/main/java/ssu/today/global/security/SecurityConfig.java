@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ssu.today.domain.member.entity.UserRole;
+import ssu.today.domain.member.repository.MemberRepository;
 import ssu.today.domain.member.service.MemberService;
 import ssu.today.global.security.filter.JwtFilter;
 import ssu.today.global.security.handler.ExceptionHandlerFilter;
@@ -26,6 +27,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
     private final JwtTokenService jwtTokenService;
     private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     // AuthenticationManager를 빈으로 등록. 이 빈은 인증을 처리하는 데 사용됨
     @Bean
@@ -54,7 +56,7 @@ public class SecurityConfig {
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션을 사용하지 않고, JWT로 인증을 관리
                 .formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.disable()) // 로그인 폼을 사용하지 않도록 설정
                 .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer.disable()) // HTTP 기본 인증을 비활성화
-                .addFilterBefore(new JwtFilter(jwtTokenService, memberService), UsernamePasswordAuthenticationFilter.class) // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+                .addFilterBefore(new JwtFilter(jwtTokenService, memberRepository), UsernamePasswordAuthenticationFilter.class) // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .addFilterBefore(new ExceptionHandlerFilter(), JwtFilter.class) // JWT 필터 앞에 예외 처리 필터를 추가
                 .build(); // 설정을 기반으로 SecurityFilterChain 객체를 생성
     }

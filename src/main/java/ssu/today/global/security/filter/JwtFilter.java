@@ -12,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import ssu.today.domain.member.dto.MemberResponse;
+import ssu.today.domain.member.dto.UserDTO;
+import ssu.today.domain.member.entity.Member;
+import ssu.today.domain.member.repository.MemberRepository;
 import ssu.today.domain.member.service.MemberService;
 import ssu.today.global.error.BusinessException;
 import ssu.today.global.error.ErrorCode;
@@ -32,7 +35,7 @@ public class JwtFilter extends GenericFilterBean {
 
     public static final String AUTHORIZATION_HEADER = "Authorization"; // Authorization 헤더의 이름을 정의한 상수
     private final JwtTokenService jwtTokenService;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     // 이 메소드는 요청이 필터를 통과할 때마다 호출됨
     // 여기서 JWT(액세스 토큰)의 유효성을 검사하고, 사용자 계정정보를 SecurityContext에 저장
@@ -51,19 +54,18 @@ public class JwtFilter extends GenericFilterBean {
 
             // JWT에서 사용자 ID를 추출
             Long authId = Long.valueOf(jwtTokenService.getPayload(jwt)); // 토큰에 있는 authId 가져오기
-            // 추출한 사용자 ID로 데이터베이스에서 사용자 정보를 조회
-            MemberResponse.LoginInfo member = memberService.findById(authId);
 
-            // 사용자 정보가 존재하지 않는 경우, 예외 발생
-            if(member == null) {
-                throw new BusinessException(MEMBER_NOT_FOUND);
-            }
+
+            // 추출한 사용자 ID로 데이터베이스에서 사용자 정보를 조회
+            Member member = memberRepository.findById(authId)
+                    .orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
 
             // 조회한 사용자 정보를 UserPrincipal로 변환하여 UserDetails 객체를 생성
             UserDetails userDetails = UserPrincipal.create(member);
             // 사용자 인증 토큰을 생성하고, 이를 SecurityContext에 설정하여 인증 정보를 저장
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
         } else {
             // JWT가 유효하지 않으면 예외 발생
             throw new BusinessException(INVALID_ACCESS_TOKEN);

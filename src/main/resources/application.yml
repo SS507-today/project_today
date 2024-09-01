@@ -24,10 +24,6 @@ jwt:
   access-token-validity-in-seconds: 3600 # 1시간
   refresh-token-validity-in-seconds: 604800 # 1주일
 
-mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
-  type-aliases-package: ssu.today.domain.member.dto
-
 springdoc:
   swagger-ui:
     tags-sorter: alpha

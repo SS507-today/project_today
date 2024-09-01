@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ssu.today.domain.member.dto.MemberResponse;
+import ssu.today.domain.member.dto.UserDTO;
+import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.entity.UserRole;
 
 import java.util.Collection;
@@ -36,7 +38,7 @@ public class UserPrincipal implements UserDetails {
 
     // MemberResponse 객체로부터 UserPrincipal 객체를 생성하는 팩토리 메소드
     // UserPrincipal 객체를 직접 생성하지 않고, create 메소드를 통해 생성함으로써, 객체 생성 로직을 캡슐화
-    public static UserPrincipal create(MemberResponse.LoginInfo loginInfo) {
+    public static UserPrincipal create(Member member) {
 
         // 사용자의 권한 목록을 생성. 여기서는 기본적으로 "ROLE_USER" 권한을 부여
         List<GrantedAuthority> authorities =
@@ -44,9 +46,9 @@ public class UserPrincipal implements UserDetails {
 
         // UserPrincipal 객체를 생성하고 반환
         return new UserPrincipal(
-                loginInfo.getAuthId(),
-                loginInfo.getEmail(),
-                loginInfo.getImage(),
+                member.getAuthId(),
+                member.getEmail(),
+                member.getImage(),
                 "", // 사용자 비밀번호 (현재 비어 있음)
                 authorities,
                 null //사용자 속성 (현재 null)

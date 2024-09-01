@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import ssu.today.domain.member.converter.MemberConverter;
 import ssu.today.domain.member.dto.KakaoInfoResponse;
-import ssu.today.domain.member.dto.MemberResponse;
-import ssu.today.domain.member.service.MemberService;
+import ssu.today.domain.member.dto.UserDTO;
+import ssu.today.domain.member.entity.Member;
+import ssu.today.domain.member.repository.MemberRepository;
 
 import java.util.Map;
 
@@ -16,7 +18,8 @@ public class KakaoOauthService {
     // 카카오 API를 호출하여 사용자의 프로필 정보를 가져오고, 이를 바탕으로 사용자 데이터를 관리하는 클래스
     // 카카오 OAuth를 사용하여 사용자의 정보를 가져오고, 해당 정보를 바탕으로 데이터베이스에 사용자 정보를 저장하거나 업데이트하는 기능을 제공
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
+    private final MemberConverter memberConverter;
 
     // 카카오 API를 호출하여 Access Token을 사용해 유저 정보를 가져오는 메소드
     public Map<String, Object> getUserAttributesByToken(String accessToken){
@@ -33,7 +36,7 @@ public class KakaoOauthService {
     }
 
     // 카카오 API로부터 가져온 유저 정보를 데이터베이스에 저장하거나 업데이트하는 메소드
-    public MemberResponse.LoginInfo getUserProfileByToken(String accessToken){
+    public UserDTO getUserProfileByToken(String accessToken){
 
         // Access Token을 사용하여 카카오 API로부터 사용자 정보를 가져옴
         Map<String, Object> userAttributesByToken = getUserAttributesByToken(accessToken);
@@ -42,21 +45,28 @@ public class KakaoOauthService {
         KakaoInfoResponse kakaoInfoDto = new KakaoInfoResponse(userAttributesByToken);
 
         // KakaoInfoDto 객체에서 필요한 정보를 추출하여 UserDto 객체를 생성
-        MemberResponse.LoginInfo loginInfo = MemberResponse.LoginInfo
-                .builder()
-                .authId(kakaoInfoDto.getId()) // 카카오 사용자 ID를 UserDto의 ID로 설정
+        UserDTO userDTO = UserDTO.builder()
+                .authId(kakaoInfoDto.getAuthId()) // 카카오 사용자 authID를 UserDto의 authID로 설정
                 .email(kakaoInfoDto.getEmail()) // 카카오 사용자 이메일을 UserDto의 이메일로 설정
                 .image(kakaoInfoDto.getProfileImageUrl())
                 .platform("kakao")
                 .build();
 
         // 데이터베이스에서 해당 사용자 ID로 사용자를 조회
-        // 이미 존재하면 업데이트, 존재하지 않으면 새로운 사용자로 저장
-        if(memberService.findById(loginInfo.getAuthId()) != null) {
-            memberService.update(loginInfo);
+        Member existingUser = memberRepository.findByAuthId(userDTO.getAuthId()).orElse(null);
+
+        if (existingUser != null) {
+            // 이미 존재하면 업데이트
+            existingUser.setEmail(userDTO.getEmail());
+            existingUser.setImage(userDTO.getImage());
+            existingUser.setPlatform(userDTO.getPlatform());
+            memberRepository.save(existingUser);
         } else {
-            memberService.save(loginInfo);
+            // 존재하지 않으면 새로운 사용자로 저장
+            Member newUser = memberConverter.toEntity(userDTO);
+            memberRepository.save(newUser);
         }
-        return loginInfo;
+
+        return userDTO;
     }
 }
