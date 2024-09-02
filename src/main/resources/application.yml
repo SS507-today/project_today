@@ -20,7 +20,7 @@ spring:
         default_batch_fetch_size: 500
 
 jwt:
-  secret: ittodaydaytotodaytodaodititodyaot
+  secret: ittoddadatodaytotodaoaiaoaiaottttoaiowq
   access-token-validity-in-seconds: 3600 # 1시간
   refresh-token-validity-in-seconds: 604800 # 1주일
 

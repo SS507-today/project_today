@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+application.yml
+firebase_key.json
+*.log
