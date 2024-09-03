@@ -52,6 +52,7 @@ public class KakaoOauthService {
         // KakaoInfoDto 객체에서 필요한 정보를 추출하여 UserDto 객체를 생성
         UserDTO userDTO = UserDTO.builder()
                 .authId(kakaoInfoDto.getAuthId()) // 카카오 사용자 authID를 UserDto의 authID로 설정
+                .name(kakaoInfoDto.getName())
                 .email(kakaoInfoDto.getEmail()) // 카카오 사용자 이메일을 UserDto의 이메일로 설정
                 .image(kakaoInfoDto.getProfileImageUrl())
                 .platform("kakao")
@@ -65,6 +66,7 @@ public class KakaoOauthService {
             existingUser.setEmail(userDTO.getEmail());
             existingUser.setImage(userDTO.getImage());
             existingUser.setPlatform(userDTO.getPlatform());
+            existingUser.setName(userDTO.getName());
             memberRepository.save(existingUser);
         } else {
             // 존재하지 않으면 새로운 사용자로 저장

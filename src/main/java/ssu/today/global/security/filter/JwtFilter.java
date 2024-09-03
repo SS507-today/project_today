@@ -52,12 +52,12 @@ public class JwtFilter extends GenericFilterBean {
         // JWT가 존재하고, 유효한 경우
         if (StringUtils.hasText(jwt) && jwtTokenService.validateToken(jwt)) {
 
-            // JWT에서 사용자 ID를 추출
+            // JWT에서 사용자 authID를 추출
             Long authId = Long.valueOf(jwtTokenService.getPayload(jwt)); // 토큰에 있는 authId 가져오기
 
 
             // 추출한 사용자 ID로 데이터베이스에서 사용자 정보를 조회
-            Member member = memberRepository.findById(authId)
+            Member member = memberRepository.findByAuthId(authId)
                     .orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
 
             // 조회한 사용자 정보를 UserPrincipal로 변환하여 UserDetails 객체를 생성

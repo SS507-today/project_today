@@ -25,6 +25,7 @@ public class UserPrincipal implements UserDetails {
     // UserPrincipal 클래스는 이 인터페이스를 구현함으로써 Spring Security가 사용자의 인증 및 권한을 관리할 수 있도록 함
 
     private long id; //사용자의 고유id
+    private String name;
     private String email;
     private String image;
     private String password; //현재는 비어 있음
@@ -45,6 +46,7 @@ public class UserPrincipal implements UserDetails {
         // UserPrincipal 객체를 생성하고 반환
         return new UserPrincipal(
                 member.getAuthId(),
+                member.getName(),
                 member.getEmail(),
                 member.getImage(),
                 "", // 사용자 비밀번호 (현재 비어 있음)
