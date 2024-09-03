@@ -3,6 +3,7 @@ package ssu.today.global.security.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import ssu.today.domain.member.converter.MemberConverter;
 import ssu.today.domain.member.dto.KakaoInfoResponse;
@@ -10,10 +11,13 @@ import ssu.today.domain.member.dto.UserDTO;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
 
+import java.io.Console;
 import java.util.Map;
+import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class KakaoOauthService {
     // 카카오 API를 호출하여 사용자의 프로필 정보를 가져오고, 이를 바탕으로 사용자 데이터를 관리하는 클래스
     // 카카오 OAuth를 사용하여 사용자의 정보를 가져오고, 해당 정보를 바탕으로 데이터베이스에 사용자 정보를 저장하거나 업데이트하는 기능을 제공
@@ -21,6 +25,7 @@ public class KakaoOauthService {
     private final MemberRepository memberRepository;
     private final MemberConverter memberConverter;
 
+    @Transactional(readOnly = true)
     // 카카오 API를 호출하여 Access Token을 사용해 유저 정보를 가져오는 메소드
     public Map<String, Object> getUserAttributesByToken(String accessToken){
         // WebClient를 사용하여 HTTP 요청을 보냄

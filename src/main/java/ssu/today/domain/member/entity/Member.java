@@ -28,13 +28,12 @@ public class Member extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
-    @Column
+    @Column(nullable = false)
     private Long authId;
-    @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
+    @Column
     private String name;
-    @Column(nullable = false)
+    @Column
     private String nickName;
     @Column(length = 2000)
     private String image; // 프로필 이미지 URL

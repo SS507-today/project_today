@@ -9,7 +9,6 @@ public class MemberConverter {
 
     public UserDTO toMemberInfo(Member member) {
         return UserDTO.builder()
-                .id(member.getId()) //DB의 id
                 .image(member.getImage())
                 .email(member.getEmail())
                 .platform(member.getPlatform())
@@ -21,7 +20,6 @@ public class MemberConverter {
     public Member toEntity(UserDTO userDTO) {
         return Member.builder()
                 .authId(userDTO.getAuthId()) // UserDTO의 authId를 User 엔티티의 authId로 설정
-                .id(userDTO.getId())
                 .name(userDTO.getName()) //카카오톡 이름
                 .email(userDTO.getEmail()) // UserDTO의 이메일을 User 엔티티의 이메일로 설정
                 .image(userDTO.getImage()) // UserDTO의 이미지를 User 엔티티의 이미지로 설정

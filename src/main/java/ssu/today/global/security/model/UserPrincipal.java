@@ -6,8 +6,6 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ssu.today.domain.member.dto.MemberResponse;
-import ssu.today.domain.member.dto.UserDTO;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.entity.UserRole;
 

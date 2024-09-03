@@ -3,6 +3,7 @@ package ssu.today.global.security.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ssu.today.domain.member.dto.UserDTO;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
@@ -13,6 +14,7 @@ import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class OauthService {
     private final JwtTokenService jwtTokenService;
     private final KakaoOauthService kakaoOauthService;
@@ -34,7 +36,7 @@ public class OauthService {
         final String refreshToken = jwtTokenService.createRefreshToken();
 
         // 사용자의 정보를 JPA를 통해 조회
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findByAuthId(id)
                 .orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND));
 
         // 현재 사용자 정보에 새로운 refresh token 추가

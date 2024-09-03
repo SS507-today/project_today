@@ -10,7 +10,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 public class UserDTO {
-    private Long id;
     private Long authId;
     private String email;
     private String image; //카카오 프로필 이미지
