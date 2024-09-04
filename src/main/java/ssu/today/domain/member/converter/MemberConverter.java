@@ -14,6 +14,7 @@ public class MemberConverter {
                 .email(member.getEmail())
                 .platform(member.getPlatform())
                 .name(member.getName())
+                .refreshToken(member.getRefreshToken())
                 .build();
     }
 
