@@ -11,9 +11,7 @@ import ssu.today.domain.member.dto.UserDTO;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
 
-import java.io.Console;
 import java.util.Map;
-import java.util.logging.Logger;
 
 @RequiredArgsConstructor
 @Service

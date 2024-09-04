@@ -11,13 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
-import ssu.today.domain.member.dto.MemberResponse;
-import ssu.today.domain.member.dto.UserDTO;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
-import ssu.today.domain.member.service.MemberService;
 import ssu.today.global.error.BusinessException;
-import ssu.today.global.error.ErrorCode;
 import ssu.today.global.security.model.UserPrincipal;
 import ssu.today.global.security.service.JwtTokenService;
 
