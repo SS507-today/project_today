@@ -44,10 +44,10 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable()) // CSRF 보호를 비활성화
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/login/**", "/token/refresh").permitAll() // 로그인 및 토큰 갱신 경로는 인증 없이 접근 가능
-                        .requestMatchers("/user/**").hasAuthority(UserRole.USER.getRole()) // /user/** 경로는 USER 권한이 있어야 접근 가능
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/error/**").permitAll()
+                        .requestMatchers("/login/**", "/token/refresh").permitAll() // 로그인 및 토큰 갱신 경로는 인증 없이 접근 가능
+                        .requestMatchers("/user/**").hasAuthority(UserRole.USER.getRole()) // /user/** 경로는 USER 권한이 있어야 접근 가능
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",
@@ -68,6 +68,7 @@ public class SecurityConfig {
         return web ->
                 web.ignoring()
                         .requestMatchers("/login/**", "/token/refresh") // 로그인 및 토큰 갱신 경로는 보안 필터에서 제외
+                        .requestMatchers("/auth/**") //auth관련 경로도 제외
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-resources/**",

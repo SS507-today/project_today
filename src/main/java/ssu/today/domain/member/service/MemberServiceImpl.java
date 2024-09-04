@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.today.domain.member.converter.MemberConverter;
+import ssu.today.domain.member.dto.MemberRequest;
+import ssu.today.domain.member.dto.MemberResponse;
 import ssu.today.domain.member.dto.OauthRequest;
 import ssu.today.domain.member.dto.OauthResponse;
 import ssu.today.domain.member.dto.RefreshTokenResponse;
@@ -84,6 +86,12 @@ public class MemberServiceImpl implements MemberService {
             throw new BusinessException(MEMBER_NOT_FOUND);
         }
         return memberConverter.toMemberInfo(member);
+    }
+
+    @Override
+    public MemberResponse.CheckMemberRegistration checkRegistration(MemberRequest.LoginRequest request) {
+        boolean isRegistered = memberRepository.existsByAuthId(request.getAuthId());
+        return memberConverter.toCheckMemberRegistration(isRegistered);
     }
 
     @Override
