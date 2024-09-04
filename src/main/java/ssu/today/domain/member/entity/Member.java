@@ -30,9 +30,9 @@ public class Member extends BaseTimeEntity {
     private Long id;
     @Column(nullable = false)
     private Long authId;
-    @Column
+    @Column(nullable = false)
     private String email;
-    @Column
+    @Column(nullable = false)
     private String name;
     @Column
     private String nickName;

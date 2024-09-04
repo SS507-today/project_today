@@ -12,7 +12,7 @@ spring:
     open-in-view: true
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     properties:
       hibernate:
@@ -21,7 +21,7 @@ spring:
 
 jwt:
   secret: ittoddadatodaytotodaoaiaoaiaottttoaiowq
-  access-token-validity-in-seconds: 86400 # 24시간
+  access-token-validity-in-seconds: 604800 # 1주일
   refresh-token-validity-in-seconds: 604800 # 1주일
 
 springdoc:

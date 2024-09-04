@@ -53,7 +53,7 @@ public class KakaoOauthService {
         UserDTO userDTO = UserDTO.builder()
                 .authId(kakaoInfoDto.getAuthId()) // 카카오 사용자 authID를 UserDto의 authID로 설정
                 .name(kakaoInfoDto.getName())
-                .email(kakaoInfoDto.getEmail()) // 카카오 사용자 이메일을 UserDto의 이메일로 설정
+                . email(kakaoInfoDto.getEmail()) // 카카오 사용자 이메일을 UserDto의 이메일로 설정
                 .image(kakaoInfoDto.getProfileImageUrl())
                 .platform("kakao")
                 .build();

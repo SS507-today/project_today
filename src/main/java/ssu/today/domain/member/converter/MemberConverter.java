@@ -9,6 +9,7 @@ public class MemberConverter {
 
     public UserDTO toMemberInfo(Member member) {
         return UserDTO.builder()
+                .authId(member.getAuthId())
                 .image(member.getImage())
                 .email(member.getEmail())
                 .platform(member.getPlatform())

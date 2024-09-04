@@ -31,7 +31,7 @@ public class SecurityUtil {
         long userId;
         // 인증된 사용자의 정보를 UserPrincipal 객체로 변환하여 사용자 ID를 추출
         if (authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
-            userId = userPrincipal.getId();
+            userId = userPrincipal.getAuthId();
         } else {
             // 인증된 정보가 예상한 타입(UserPrincipal의 인스턴스)이 아니면 잘못된 요청으로 간주하고 예외 발생
             throw new BusinessException(BAD_REQUEST);

@@ -24,7 +24,7 @@ public class UserPrincipal implements UserDetails {
     // Spring Security는 UserDetails 인터페이스를 통해 사용자의 정보를 관리하며,
     // UserPrincipal 클래스는 이 인터페이스를 구현함으로써 Spring Security가 사용자의 인증 및 권한을 관리할 수 있도록 함
 
-    private long id; //사용자의 고유id
+    private long authId; //사용자의 고유id
     private String name;
     private String email;
     private String image;
