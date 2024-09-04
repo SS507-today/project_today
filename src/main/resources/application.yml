@@ -12,9 +12,18 @@ spring:
     open-in-view: true
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     properties:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 500
+
+jwt:
+  secret: ittoddadatodaytotodaoaiaoaiaottttoaiowq
+  access-token-validity-in-seconds: 604800 # 1주일
+  refresh-token-validity-in-seconds: 604800 # 1주일
+
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
