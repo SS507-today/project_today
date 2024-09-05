@@ -19,7 +19,7 @@ import ssu.today.global.security.annotation.LoginMember;
 import static ssu.today.global.result.code.MemberResultCode.CHECK_MEMBER_REGISTRATION;
 
 @RestController
-@RequestMapping
+@RequestMapping("/members")
 @Tag(name = "01. 회원 API", description = "회원 도메인의 API입니다.")
 @RequiredArgsConstructor
 public class MemberController {
@@ -27,7 +27,7 @@ public class MemberController {
     private final MemberService memberService;
 
     // 닉네임 설정 API
-    @PostMapping("/members/my/nickName")
+    @PostMapping("/my/nickName")
     @Operation(summary = "닉네임 생성/변경 API", description = "닉네임을 생성 또는 변경하는 API입니다.")
     public ResultResponse<MemberResponse.NickNameInfo> setNickName(@LoginMember Member member,
                                                                    @RequestParam String nickName) {
@@ -35,7 +35,7 @@ public class MemberController {
     }
 
     // 현재 로그인된 유저정보 조회 API (authId로)
-    @GetMapping("/my/info")
+    @GetMapping("/my")
     @Operation(summary = "현재 유저정보 조회 API", description = "현재 저장된 멤버의 authId로 유저정보를 조회하는 API입니다.")
     public ResultResponse<UserDTO> getMyInfo() {
         return ResultResponse.of(CHECK_MEMBER_REGISTRATION, memberService.getMyInfo());
