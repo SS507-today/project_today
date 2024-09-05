@@ -1,6 +1,5 @@
 package ssu.today.global.security.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-@AllArgsConstructor
 // SecurityContext authentication에 저장될 유저정보
 public class UserPrincipal implements UserDetails {
     // Spring Security에서 인증된 사용자 정보를 표현하는 데 사용되는 커스텀 UserDetails 구현 클래스
@@ -24,17 +22,19 @@ public class UserPrincipal implements UserDetails {
     // Spring Security는 UserDetails 인터페이스를 통해 사용자의 정보를 관리하며,
     // UserPrincipal 클래스는 이 인터페이스를 구현함으로써 Spring Security가 사용자의 인증 및 권한을 관리할 수 있도록 함
 
-    private long authId; //사용자의 고유id
-    private String refreshToken; //리프레쉬토큰
-    private String name;
-    private String email;
-    private String image;
+    private final Member member; //멤버객체를 가져와 저장
+    private Collection<? extends GrantedAuthority> authorities; // 사용자의 권한 목록
     private String password; //현재는 비어 있음
-    private Collection<? extends GrantedAuthority> authorities; //사용자의 권한 목록
 
     @Setter
     private Map<String, Object> attributes; // OAuth2와 같은 외부 인증에서 사용되는 사용자 속성을 저장하는 맵.
     //OAuth2와 같은 외부 인증에서 사용되는 사용자 속성을 저장
+
+    // 멤버객체와 권한 목록을 가져와서 저장
+    public UserPrincipal(Member member, Collection<? extends GrantedAuthority> authorities) {
+        this.member = member;
+        this.authorities = authorities;
+    }
 
     // MemberResponse 객체로부터 UserPrincipal 객체를 생성하는 팩토리 메소드
     // UserPrincipal 객체를 직접 생성하지 않고, create 메소드를 통해 생성함으로써, 객체 생성 로직을 캡슐화
@@ -45,16 +45,7 @@ public class UserPrincipal implements UserDetails {
                 Collections.singletonList(new SimpleGrantedAuthority(UserRole.USER.getRole()));
 
         // UserPrincipal 객체를 생성하고 반환
-        return new UserPrincipal(
-                member.getAuthId(),
-                member.getRefreshToken(),
-                member.getName(),
-                member.getEmail(),
-                member.getImage(),
-                "", // 사용자 비밀번호 (현재 비어 있음)
-                authorities,
-                null //사용자 속성 (현재 null)
-        );
+        return new UserPrincipal(member, authorities);
     }
 
     // 계정이 만료되지 않았음을 나타냄. true를 반환하여 계정이 유효함을 나타냄
@@ -84,7 +75,6 @@ public class UserPrincipal implements UserDetails {
     // Spring Security가 사용자 이름으로 사용하는 값을 반환. 여기서는 이메일을 사용
     @Override
     public String getUsername() {
-        return email;
+        return member.getEmail();
     }
-
 }

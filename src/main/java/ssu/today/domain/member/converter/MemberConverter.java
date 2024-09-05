@@ -8,7 +8,7 @@ import ssu.today.domain.member.entity.Member;
 @Component
 public class MemberConverter {
 
-    // 인가 관련
+    // 인가 관련 반환
     public UserDTO toMemberInfo(Member member) {
         return UserDTO.builder()
                 .authId(member.getAuthId())
@@ -32,9 +32,16 @@ public class MemberConverter {
                 .build();
     }
 
+    // 회원가입 여부 체크
     public MemberResponse.CheckMemberRegistration toCheckMemberRegistration(boolean isRegistered) {
         return new MemberResponse.CheckMemberRegistration(isRegistered);
     }
 
+    public MemberResponse.NickNameInfo toNickNameInfo(Member member) {
+        return MemberResponse.NickNameInfo.builder()
+                .memberId(member.getId())
+                .nickName(member.getNickName())
+                .build();
+    }
 
 }

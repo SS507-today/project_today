@@ -15,5 +15,6 @@ public interface MemberService {
     RefreshTokenResponse tokenRefresh(HttpServletRequest request);
     UserDTO getMyInfo();
     MemberResponse.CheckMemberRegistration checkRegistration(MemberRequest.LoginRequest request);
+    MemberResponse.NickNameInfo setNickName(Member member, String nickName);
     Member findMemberByAuthId(Long authId);
 }

@@ -88,10 +88,24 @@ public class MemberServiceImpl implements MemberService {
         return memberConverter.toMemberInfo(member);
     }
 
+    @Transactional
     @Override
     public MemberResponse.CheckMemberRegistration checkRegistration(MemberRequest.LoginRequest request) {
         boolean isRegistered = memberRepository.existsByAuthId(request.getAuthId());
+        if (!isRegistered) {
+            throw new BusinessException(MEMBER_NOT_FOUND);
+        }
         return memberConverter.toCheckMemberRegistration(isRegistered);
+    }
+
+    @Transactional
+    @Override
+    public MemberResponse.NickNameInfo setNickName(Member member, String nickName) {
+        // 닉네임을 설정하고 db에 저장
+        member.setNickName(nickName);
+        memberRepository.save(member);
+
+        return memberConverter.toNickNameInfo(member);
     }
 
     @Override

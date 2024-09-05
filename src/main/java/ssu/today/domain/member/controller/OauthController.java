@@ -12,14 +12,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ssu.today.domain.member.converter.MemberConverter;
 import ssu.today.domain.member.dto.MemberRequest;
 import ssu.today.domain.member.dto.MemberResponse;
 import ssu.today.domain.member.dto.OauthRequest;
 import ssu.today.domain.member.dto.OauthResponse;
 import ssu.today.domain.member.dto.RefreshTokenResponse;
+import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.service.MemberService;
 import ssu.today.global.result.ResultResponse;
+import ssu.today.global.result.code.MemberResultCode;
+import ssu.today.global.security.annotation.LoginMember;
 
 import static ssu.today.global.result.code.MemberResultCode.CHECK_MEMBER_REGISTRATION;
 import static ssu.today.global.result.code.MemberResultCode.LOGIN;
@@ -32,6 +37,7 @@ import static ssu.today.global.result.code.MemberResultCode.REFRESH_TOKEN;
 public class OauthController {
 
     private final MemberService memberService;
+    private final MemberConverter memberConverter;
 
     @PostMapping("/login/oauth/{provider}")
     @Operation(summary = "로그인 API", description = "카카오톡을 통해 서비스에 로그인하는 API입니다.")
@@ -50,6 +56,7 @@ public class OauthController {
         return ResultResponse.of(REFRESH_TOKEN, memberService.tokenRefresh(request));
     }
 
+    // 특정 authId를 가진 회원의 회원가입 여부 조회
     @PostMapping("/auth/check-registration")
     @Operation(summary = "회원가입 여부 조회 API", description = "authId를 통해, 해당 정보와 일치하는 회원의 가입 여부를 조회하는 API입니다.")
     public ResultResponse<MemberResponse.CheckMemberRegistration> checkSignup(@Valid @RequestBody MemberRequest.LoginRequest request) {
