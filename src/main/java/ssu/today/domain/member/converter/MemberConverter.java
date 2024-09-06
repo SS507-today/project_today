@@ -9,7 +9,7 @@ import ssu.today.domain.member.entity.Member;
 public class MemberConverter {
 
     // 인가 관련 반환
-    public UserDTO toMemberInfo(Member member) {
+    public UserDTO toLoginUserInfo(Member member) {
         return UserDTO.builder()
                 .authId(member.getAuthId())
                 .image(member.getImage())
@@ -41,6 +41,17 @@ public class MemberConverter {
         return MemberResponse.NickNameInfo.builder()
                 .memberId(member.getId())
                 .nickName(member.getNickName())
+                .build();
+    }
+
+    // 멤버 조회시, MemberInfo 응답으로 변환
+    public MemberResponse.MemberInfo toMemberInfo(Member member) {
+        return MemberResponse.MemberInfo.builder()
+                .memberId(member.getId())
+                .name(member.getName())
+                .nickName(member.getNickName())
+                .email(member.getEmail())
+                .image(member.getImage())
                 .build();
     }
 

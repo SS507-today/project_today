@@ -16,5 +16,6 @@ public interface MemberService {
     UserDTO getMyInfo();
     MemberResponse.CheckMemberRegistration checkRegistration(MemberRequest.LoginRequest request);
     MemberResponse.NickNameInfo setNickName(Member member, String nickName);
+    Member findMemberByMemberId(Long memberId);
     Member findMemberByAuthId(Long authId);
 }
