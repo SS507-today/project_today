@@ -19,4 +19,15 @@ public abstract class MemberResponse {
         private Long memberId;
         private String nickName;
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class MemberInfo {
+        private Long memberId;
+        private String email;
+        private String name;
+        private String nickName;
+        private String image;
+    }
 }

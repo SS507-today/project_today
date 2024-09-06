@@ -24,6 +24,7 @@ import java.util.Arrays;
 import static ssu.today.global.error.code.JwtErrorCode.INVALID_REFRESH_TOKEN;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.MemberErrorCode.MEMBER_NOT_FOUND_BY_AUTH_ID;
+import static ssu.today.global.error.code.MemberErrorCode.MEMBER_NOT_FOUND_BY_MEMBER_ID;
 
 @Service
 @Transactional(readOnly = true)
@@ -85,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
         if(member == null) {
             throw new BusinessException(MEMBER_NOT_FOUND);
         }
-        return memberConverter.toMemberInfo(member);
+        return memberConverter.toLoginUserInfo(member);
     }
 
     @Transactional
@@ -106,6 +107,12 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         return memberConverter.toNickNameInfo(member);
+    }
+
+    @Override
+    public Member findMemberByMemberId(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(MEMBER_NOT_FOUND_BY_MEMBER_ID));
     }
 
     @Override
