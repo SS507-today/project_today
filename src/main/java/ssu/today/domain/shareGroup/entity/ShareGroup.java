@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 import ssu.today.global.entity.BaseTimeEntity;
 
@@ -20,6 +21,7 @@ import ssu.today.global.entity.BaseTimeEntity;
 @Table(name = "share_groups")
 @SQLRestriction("deleted_at is NULL")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -33,19 +35,21 @@ public class ShareGroup extends BaseTimeEntity {
     @Column(name = "description", length = 50)
     private String description;
     @Column(name = "max_members", nullable = false)
-    private int maxMembers;
+    private int memberCount;
     @Column(name = "invite_code", nullable = false)
     private String inviteCode;
     @Column(name = "cover_image", nullable = false)
     private int coverImage;
     @Column(name = "rule_first", length = 30)
-    private int ruleFirst;
+    private String ruleFirst;
     @Column(name = "rule_second", length = 30)
-    private int ruleSecond;
+    private String ruleSecond;
     @Column(name = "rule_third", length = 30)
-    private int ruleThird;
+    private String ruleThird;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
+
 }

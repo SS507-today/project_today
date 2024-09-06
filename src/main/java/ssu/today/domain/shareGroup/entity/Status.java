@@ -5,5 +5,5 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 public enum Status {
-   PENDING, IN_PROGRESS
+   PENDING, ACTIVE
 }
