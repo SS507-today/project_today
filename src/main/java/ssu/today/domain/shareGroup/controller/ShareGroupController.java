@@ -28,7 +28,7 @@ public class ShareGroupController {
 
     @PostMapping
     @Operation(summary = "공유그룹 생성 API", description = "새로운 공유그룹을 생성하는 API입니다.")
-    public ResultResponse<ShareGroupResponse.InviteInfo> createShareGroup(@Valid @RequestBody ShareGroupRequest.createShareGroupRequest request,
+    public ResultResponse<ShareGroupResponse.InviteInfo> createShareGroup(@RequestBody @Valid ShareGroupRequest.createShareGroupRequest request,
                                                                           @LoginMember Member member) {
         ShareGroup shareGroup = shareGroupService.createShareGroup(request, member);
         return ResultResponse.of(ShareGroupResultCode.CREATE_SHARE_GROUP,

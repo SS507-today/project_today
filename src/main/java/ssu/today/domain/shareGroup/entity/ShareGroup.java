@@ -17,6 +17,8 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 import ssu.today.global.entity.BaseTimeEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "share_groups")
 @SQLRestriction("deleted_at is NULL")
@@ -30,9 +32,9 @@ public class ShareGroup extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "share_group_id")
     private Long id;
-    @Column(name = "name", length = 15, nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "description", length = 50)
+    @Column(name = "description")
     private String description;
     @Column(name = "max_members", nullable = false)
     private int memberCount;
@@ -40,12 +42,14 @@ public class ShareGroup extends BaseTimeEntity {
     private String inviteCode;
     @Column(name = "cover_image", nullable = false)
     private int coverImage;
-    @Column(name = "rule_first", length = 30)
+    @Column(name = "rule_first")
     private String ruleFirst;
-    @Column(name = "rule_second", length = 30)
+    @Column(name = "rule_second")
     private String ruleSecond;
-    @Column(name = "rule_third", length = 30)
+    @Column(name = "rule_third")
     private String ruleThird;
+    @Column(name = "open_at")
+    private LocalDateTime openAt;  // 새로운 openAt 필드 추가
 
     @Setter
     @Enumerated(EnumType.STRING)

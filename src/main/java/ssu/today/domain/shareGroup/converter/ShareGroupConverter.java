@@ -6,6 +6,8 @@ import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.domain.shareGroup.entity.Status;
 
+import java.time.LocalDateTime;
+
 @Component
 public class ShareGroupConverter {
 
@@ -19,8 +21,10 @@ public class ShareGroupConverter {
                 .inviteCode(shareGroup.getInviteCode())
                 .createdAt(shareGroup.getCreatedAt())
                 .status(shareGroup.getStatus())
+                .openAt(shareGroup.getOpenAt())
                 .build();
     }
+
 
     public ShareGroup toEntity(ShareGroupRequest.createShareGroupRequest request, String inviteCode) {
         return ShareGroup.builder()

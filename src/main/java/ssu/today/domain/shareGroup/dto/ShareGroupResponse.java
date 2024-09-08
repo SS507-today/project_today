@@ -20,7 +20,9 @@ public abstract class ShareGroupResponse {
         private String inviteCode;
         private String inviteUrl;
         private Status status;
-        @JsonFormat(pattern = "yyyy-MM-dd")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime createdAt;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime openAt;
     }
 }

@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,7 +20,6 @@ import org.hibernate.annotations.SQLRestriction;
 import ssu.today.domain.member.entity.Member;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 @Entity
 @Table(name = "profiles")
@@ -36,7 +34,7 @@ public class Profile {
     @Column(name = "profile_id")
     private Long id;
     @Column(name = "name", nullable = false)
-    private String name; // 그룹 내 닉네임
+    private String nickName; // 그룹 내 닉네임
     @Column(name = "image", length = 2000)
     private String image; // 그룹 내 이미지
     @Column(name = "description", length = 30)
