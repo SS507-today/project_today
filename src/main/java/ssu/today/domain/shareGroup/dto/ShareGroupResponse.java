@@ -25,4 +25,20 @@ public abstract class ShareGroupResponse {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime openAt;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShareGroupDetailInfo {
+        private Long shareGroupId;
+        private String ownerName;  // 공유그룹 생성자 닉네임
+        private int memberCount;   // 그룹 인원
+        private String groupName;  // 그룹 이름
+        private int image;      // 공유그룹 대표 이미지 URL
+        private String description; // 공유그룹 소개
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        private LocalDateTime createdAt;  // 생성 날짜
+    }
+
 }

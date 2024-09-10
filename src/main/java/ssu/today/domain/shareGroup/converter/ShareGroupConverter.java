@@ -1,14 +1,15 @@
 package ssu.today.domain.shareGroup.converter;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.domain.shareGroup.entity.Status;
-
-import java.time.LocalDateTime;
+import ssu.today.domain.shareGroup.service.ShareGroupService;
 
 @Component
+@RequiredArgsConstructor
 public class ShareGroupConverter {
 
     private static final String BASE_URL = "https://today/invite/"; //baseUrl 상수
@@ -37,6 +38,19 @@ public class ShareGroupConverter {
                 .ruleThird(request.getRuleThird())     // 요청에서 받은 세 번째 그룹 룰
                 .inviteCode(inviteCode)                // 생성된 초대 코드
                 .status(Status.PENDING)// 초기 상태는 PENDING
+                .build();
+    }
+
+    public ShareGroupResponse.ShareGroupDetailInfo toShareGroupDetailInfo(ShareGroup shareGroup) {
+
+        return ShareGroupResponse.ShareGroupDetailInfo.builder()
+                .shareGroupId(shareGroup.getId())
+                .ownerName(shareGroup.getOwnerName())  // 생성자 닉네임
+                .memberCount(shareGroup.getMemberCount())
+                .groupName(shareGroup.getName())
+                .image(shareGroup.getCoverImage())  // 이미지 URL
+                .description(shareGroup.getDescription())
+                .createdAt(shareGroup.getCreatedAt())
                 .build();
     }
 }

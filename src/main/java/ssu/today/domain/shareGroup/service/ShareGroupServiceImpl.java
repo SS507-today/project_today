@@ -22,6 +22,9 @@ import java.util.UUID;
 
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
+import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
+import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_CREATOR_NOT_FOUND;
+import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_NOT_FOUND;
 
 @Service
 @Transactional(readOnly = true)
@@ -95,12 +98,35 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // 조회된 각 그룹에 대해 상태를 ACTIVE로 변경하고 초대 코드를 무효화시킴
         for (ShareGroup shareGroup : pendingGroups) {
-            shareGroup.setStatus(Status.ACTIVE);  // 상태를 ACTIVE로 변경
-            shareGroup.setInviteCode(null);       // 초대 코드를 무효화
-            shareGroupRepository.save(shareGroup); // 변경된 정보를 데이터베이스에 저장
+            updateGroupStatus(shareGroup); // 트랜잭션을 분리하여 관리
         }
     }
 
+    @Transactional
+    public void updateGroupStatus(ShareGroup shareGroup) {
+        shareGroup.setStatus(Status.ACTIVE);  // 상태를 ACTIVE로 변경
+        shareGroup.setInviteCode(null);       // 초대 코드를 무효화
+        shareGroupRepository.save(shareGroup); // 변경된 정보를 데이터베이스에 저장
+    }
+
+    public ShareGroup findShareGroup(String inviteCode) {
+        // 1. 초대 코드로 공유 그룹 조회
+        ShareGroup shareGroup = shareGroupRepository.findByInviteCode(inviteCode)
+                .orElseThrow(() -> new BusinessException(SHARE_GROUP_NOT_FOUND));  // 그룹이 없으면 예외 발생
+
+        // 2. 그룹의 상태가 PENDING인지 확인
+        if (shareGroup.getStatus() != Status.PENDING) {
+            throw new BusinessException(SHARE_GROUP_ALREADY_STARTED);  // 그룹 상태가 PENDING이 아니면 예외 발생
+        }
+
+        // 3. 공유그룹 오너의 이름을 확인
+        Profile creatorProfile = profileRepository.findByShareGroupAndRole(shareGroup, Role.CREATOR)
+                .orElseThrow(() -> new BusinessException(SHARE_GROUP_CREATOR_NOT_FOUND));  // 생성자가 없으면 예외 발생
+        String ownerName = creatorProfile.getNickName();
+        shareGroup.setOwnerName(ownerName);
+
+        return shareGroup;
+    }
 
     // openAt 계산 로직
     private LocalDateTime calculateOpenAt(LocalDateTime createdAt) {

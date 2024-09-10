@@ -7,4 +7,5 @@ import ssu.today.domain.shareGroup.entity.ShareGroup;
 public interface ShareGroupService {
     ShareGroup createShareGroup(ShareGroupRequest.createShareGroupRequest request,
                                 Member member);
+    ShareGroup findShareGroup(String inviteCode);
 }

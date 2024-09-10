@@ -51,6 +51,8 @@ public class ShareGroup extends BaseTimeEntity {
     @Column(name = "open_at")
     private LocalDateTime openAt;  // 새로운 openAt 필드 추가
 
+    private String ownerName; //공유그룹 오너의 이름
+
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
