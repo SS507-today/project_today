@@ -56,6 +56,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // 엔티티로 변환하는 로직
         ShareGroup newShareGroup = shareGroupConverter.toEntity(request, inviteCode);
+        newShareGroup.setOwnerName(member.getNickName()); //오너 이름 추가
 
         // 생성된 공유 그룹을 먼저 저장하여 createdAt이 설정되게 함
         newShareGroup = shareGroupRepository.save(newShareGroup);
@@ -86,15 +87,15 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     /**
      * 매시간 실행되는 스케줄링 작업: 24시간이 지난 PENDING 상태의 그룹을 ACTIVE로 변경하고 초대 코드를 무효화
      * */
-    @Scheduled(cron = "0 0 * * * *")  // 매 정시에 실행됩니다.
+    @Scheduled(cron = "0 0 0 * * *")  // 매일 자정(00시)마다 실행
     @Transactional
     public void updatePendingGroups() {
 
-        // 현재 시간에서 24시간 이전의 시간을 계산
-        LocalDateTime cutoffTime = LocalDateTime.now().minusHours(24);
+        // 현재 시간 계산
+        LocalDateTime now = LocalDateTime.now();
 
-        // 24시간이 지난 PENDING 상태의 그룹들을 조회
-        List<ShareGroup> pendingGroups = shareGroupRepository.findAllByStatusAndCreatedAtBefore(Status.PENDING, cutoffTime);
+        // 현재 시간보다 openAt이 지나지 않은 PENDING 상태의 그룹들만 조회
+        List<ShareGroup> pendingGroups = shareGroupRepository.findAllByStatusAndOpenAtBefore(Status.PENDING, now);
 
         // 조회된 각 그룹에 대해 상태를 ACTIVE로 변경하고 초대 코드를 무효화시킴
         for (ShareGroup shareGroup : pendingGroups) {
@@ -131,19 +132,18 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     // openAt 계산 로직
     private LocalDateTime calculateOpenAt(LocalDateTime createdAt) {
 
-        // 1. createdAt에 24시간 더하기
-        LocalDateTime openAtCandidate = createdAt.plusHours(24);
+        // 24시간 후의 시간 계산
+        LocalDateTime after24Hours = createdAt.plusHours(24);
 
-        // 2. 다음 정시 구하기: 분과 초를 0으로 설정
-        if (openAtCandidate.getMinute() > 0 || openAtCandidate.getSecond() > 0) {
-            // 정시가 아니면 한 시간 더해서 다음 정시로 맞추기
-            openAtCandidate = openAtCandidate.plusHours(1).withMinute(0).withSecond(0).withNano(0);
-        } else {
-            // 이미 정시라면 분, 초, 나노초를 0으로 설정
-            openAtCandidate = openAtCandidate.withMinute(0).withSecond(0).withNano(0);
+        // 그 시간에 해당하는 날짜의 00시로 설정
+        LocalDateTime openAt = after24Hours.withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        // after24Hours가 자정 이후라면, 그날의 자정은 이미 지났기 때문에 하루를 더해 자정을 설정
+        if (after24Hours.isAfter(openAt)) {
+            openAt = openAt.plusDays(1);
         }
 
-        return openAtCandidate;
+        return openAt;
     }
 
 }

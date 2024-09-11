@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ShareGroupRepository extends JpaRepository<ShareGroup, Long> {
     Optional<ShareGroup> findByInviteCode(String inviteCode);
-    // 24시간이 지난 PENDING 상태의 모든 그룹을 조회
-    List<ShareGroup> findAllByStatusAndCreatedAtBefore(Status status, LocalDateTime dateTime);
+    // openedAt 시간이 지난 pending 그룹들 조회
+    List<ShareGroup> findAllByStatusAndOpenAtBefore(Status status, LocalDateTime dateTime);
 }
