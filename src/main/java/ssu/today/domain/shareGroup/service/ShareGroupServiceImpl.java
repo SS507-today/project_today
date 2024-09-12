@@ -90,22 +90,18 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     /**
      * 매시간 실행되는 스케줄링 작업: 24시간이 지난 PENDING 상태의 그룹을 ACTIVE로 변경하고 초대 코드를 무효화
      * */
-    // @Scheduled(cron = "0 0 0 * * *")  // 매일 자정(00시)마다 실행
-    @Scheduled(cron = "0 44 18 * * *")
+    @Scheduled(cron = "30 0 0 * * *") // 매일 자정(00시) 0분 30초마다 스케줄러 실행
     @Transactional
     public void updatePendingGroups() {
 
         // 현재 시간 계산
         LocalDateTime now = LocalDateTime.now();
-        log.info(String.valueOf(now));
 
         // 현재 시간보다 openAt이 지난 PENDING 상태의 그룹들만 조회
         List<ShareGroup> pendingGroups = shareGroupRepository.findAllByStatusAndOpenAtBefore(PENDING, now);
-        log.info(String.valueOf(pendingGroups.size()));
 
         // 조회된 각 그룹에 대해 상태를 ACTIVE로 변경하고 초대 코드를 무효화시킴
         for (ShareGroup shareGroup : pendingGroups) {
-            log.info(shareGroup.getName());
             updateGroupStatus(shareGroup);
         }
     }
