@@ -55,7 +55,7 @@ public class ShareGroup extends BaseTimeEntity {
 
     @Setter
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private Status status;
 
 }

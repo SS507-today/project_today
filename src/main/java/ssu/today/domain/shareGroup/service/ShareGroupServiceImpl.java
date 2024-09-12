@@ -1,6 +1,7 @@
 package ssu.today.domain.shareGroup.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,6 @@ import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.Role;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
-import ssu.today.domain.shareGroup.entity.Status;
 import ssu.today.domain.shareGroup.repository.ProfileRepository;
 import ssu.today.domain.shareGroup.repository.ShareGroupRepository;
 import ssu.today.global.error.BusinessException;
@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
+import static ssu.today.domain.shareGroup.entity.Status.PENDING;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
@@ -28,6 +30,7 @@ import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_NOT_FO
 
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 @RequiredArgsConstructor
 public class ShareGroupServiceImpl implements ShareGroupService {
 
@@ -87,27 +90,32 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     /**
      * 매시간 실행되는 스케줄링 작업: 24시간이 지난 PENDING 상태의 그룹을 ACTIVE로 변경하고 초대 코드를 무효화
      * */
-    @Scheduled(cron = "0 0 0 * * *")  // 매일 자정(00시)마다 실행
+    // @Scheduled(cron = "0 0 0 * * *")  // 매일 자정(00시)마다 실행
+    @Scheduled(cron = "0 44 18 * * *")
     @Transactional
     public void updatePendingGroups() {
 
         // 현재 시간 계산
         LocalDateTime now = LocalDateTime.now();
+        log.info(String.valueOf(now));
 
-        // 현재 시간보다 openAt이 지나지 않은 PENDING 상태의 그룹들만 조회
-        List<ShareGroup> pendingGroups = shareGroupRepository.findAllByStatusAndOpenAtBefore(Status.PENDING, now);
+        // 현재 시간보다 openAt이 지난 PENDING 상태의 그룹들만 조회
+        List<ShareGroup> pendingGroups = shareGroupRepository.findAllByStatusAndOpenAtBefore(PENDING, now);
+        log.info(String.valueOf(pendingGroups.size()));
 
         // 조회된 각 그룹에 대해 상태를 ACTIVE로 변경하고 초대 코드를 무효화시킴
         for (ShareGroup shareGroup : pendingGroups) {
-            updateGroupStatus(shareGroup); // 트랜잭션을 분리하여 관리
+            log.info(shareGroup.getName());
+            updateGroupStatus(shareGroup);
         }
     }
 
     @Transactional
     public void updateGroupStatus(ShareGroup shareGroup) {
-        shareGroup.setStatus(Status.ACTIVE);  // 상태를 ACTIVE로 변경
-        shareGroup.setInviteCode(null);       // 초대 코드를 무효화
+        shareGroup.setStatus(ACTIVE);  // 상태를 ACTIVE로 변경
+        shareGroup.setInviteCode("NULL");       // 초대 코드를 무효화
         shareGroupRepository.save(shareGroup); // 변경된 정보를 데이터베이스에 저장
+        shareGroupRepository.flush(); // 강제로 변경사항 커밋 ..
     }
 
     public ShareGroup findShareGroup(String inviteCode) {
@@ -116,7 +124,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
                 .orElseThrow(() -> new BusinessException(SHARE_GROUP_NOT_FOUND));  // 그룹이 없으면 예외 발생
 
         // 2. 그룹의 상태가 PENDING인지 확인
-        if (shareGroup.getStatus() != Status.PENDING) {
+        if (shareGroup.getStatus() != PENDING) {
             throw new BusinessException(SHARE_GROUP_ALREADY_STARTED);  // 그룹 상태가 PENDING이 아니면 예외 발생
         }
 
