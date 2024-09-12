@@ -17,6 +17,7 @@ import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.shareGroup.converter.ShareGroupConverter;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
+import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.domain.shareGroup.service.ShareGroupService;
 import ssu.today.global.result.ResultResponse;
@@ -72,5 +73,18 @@ public class ShareGroupController {
 
         return ResultResponse.of(ShareGroupResultCode.SHARE_GROUP_INFO,
                 shareGroupConverter.toShareGroupStatusInfo(shareGroup));
+    }
+
+    @PostMapping("{shareGroupId}/join")
+    @Operation(summary = "공유그룹 참여 API", description = "특정 공유그룹에 참여하는 API입니다.")
+    @Parameters(value = {
+            @Parameter(name = "shareGroupId", description = "특정 공유그룹 id를 입력해 주세요.")
+    })
+    public ResultResponse<ShareGroupResponse.JoinInfo> joinShareGroup(@PathVariable(name = "shareGroupId") Long shareGroupId,
+                                                                      @LoginMember Member member) {
+        // 그룹 id와 member정보를 바탕으로 프로필 생성
+        Profile profile = shareGroupService.joinShareGroup(shareGroupId, member);
+        return ResultResponse.of(ShareGroupResultCode.JOIN_SHARE_GROUP,
+                shareGroupConverter.toShareGroupJoinInfo(profile));
     }
 }

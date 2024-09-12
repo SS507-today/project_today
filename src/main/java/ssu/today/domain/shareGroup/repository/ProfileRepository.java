@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
     // 그룹의 생성자(Profile) 조회 (role이 CREATOR인 프로필을 가져옴)
     Optional<Profile> findByShareGroupAndRole(ShareGroup shareGroup, Role role);
+    boolean existsByShareGroupIdAndMemberId(Long shareGroupId, Long memberId);
 }

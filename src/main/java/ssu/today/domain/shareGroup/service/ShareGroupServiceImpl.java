@@ -12,6 +12,7 @@ import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.Role;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
+import ssu.today.domain.shareGroup.entity.Status;
 import ssu.today.domain.shareGroup.repository.ProfileRepository;
 import ssu.today.domain.shareGroup.repository.ShareGroupRepository;
 import ssu.today.global.error.BusinessException;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
 import static ssu.today.domain.shareGroup.entity.Status.PENDING;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
+import static ssu.today.global.error.code.ShareGroupErrorCode.ALREADY_JOINED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_CREATOR_NOT_FOUND;
@@ -87,6 +89,42 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         return shareGroupRepository.save(newShareGroup);
     }
 
+    @Transactional
+    @Override
+    public Profile joinShareGroup(Long shareGroupId, Member member) {
+
+        // 1. 해당 공유 그룹 조회
+        ShareGroup shareGroup = findShareGroup(shareGroupId);
+
+        // 2. PENDING 상태가 아닌 경우 참여 불가
+        if (shareGroup.getStatus() != Status.PENDING) {
+            throw new BusinessException(SHARE_GROUP_ALREADY_STARTED);
+        }
+
+        // 3. 이미 그룹에 참여 중인 멤버인지 확인 (중복 가입 방지)
+        boolean alreadyJoined = profileRepository.existsByShareGroupIdAndMemberId(shareGroupId, member.getId());
+        if (alreadyJoined) {
+            throw new BusinessException(ALREADY_JOINED);
+        }
+
+        // 4. 가입하지 않은 사용자라면, 새로운 Profile 생성
+        Profile profile = Profile.builder()
+                .nickName(member.getNickName())   // 계정 닉네임 가져오기
+                .image(member.getImage())         // 계정 이미지 가져오기
+                .description("")                  // 그룹 내 소개 (빈 값이 기본)
+                .role(Role.PARTICIPANT)           // 공유그룹 오너가 아닌, 일반 멤버 역할로 참여
+                .isMyTurn(false)                  // 기본값
+                .member(member)                   // 멤버 정보
+                .shareGroup(shareGroup)           // 해당 공유 그룹
+                .joinedAt(LocalDateTime.now())    // 참여 시간
+                .build();
+
+        // 5. Profile 저장
+        profileRepository.save(profile);
+
+        return profile;  // 새로 생성된 프로필 반환
+    }
+
     /**
      * 매시간 실행되는 스케줄링 작업: 24시간이 지난 PENDING 상태의 그룹을 ACTIVE로 변경하고 초대 코드를 무효화
      * */
@@ -131,6 +169,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         return openAt;
     }
 
+    @Override
     public ShareGroup findShareGroup(String inviteCode) {
         // 1. 초대 코드로 공유 그룹 조회
         ShareGroup shareGroup = shareGroupRepository.findByInviteCode(inviteCode)

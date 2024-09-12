@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
+import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.domain.shareGroup.entity.Status;
 import ssu.today.domain.shareGroup.service.ShareGroupService;
@@ -60,6 +61,16 @@ public class ShareGroupConverter {
                 .shareGroupId(shareGroup.getId())
                 .status(shareGroup.getStatus())
                 .openAt(shareGroup.getOpenAt())
+                .build();
+    }
+
+    public ShareGroupResponse.JoinInfo toShareGroupJoinInfo(Profile profile) {
+
+        return ShareGroupResponse.JoinInfo.builder()
+                .shareGroupId(profile.getShareGroup().getId())
+                .profileId(profile.getId())
+                .status(profile.getShareGroup().getStatus())
+                .joinedAt(profile.getJoinedAt())
                 .build();
     }
 }

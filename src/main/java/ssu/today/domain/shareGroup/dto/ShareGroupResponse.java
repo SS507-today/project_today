@@ -51,4 +51,15 @@ public abstract class ShareGroupResponse {
         private LocalDateTime openAt;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class JoinInfo {
+        private Long shareGroupId;
+        private Long profileId;
+        private Status status;
+        private LocalDateTime joinedAt;
+    }
+
 }
