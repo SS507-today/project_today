@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,8 @@ import ssu.today.domain.shareGroup.service.ShareGroupService;
 import ssu.today.global.result.ResultResponse;
 import ssu.today.global.result.code.ShareGroupResultCode;
 import ssu.today.global.security.annotation.LoginMember;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,5 +59,18 @@ public class ShareGroupController {
 
         return ResultResponse.of(ShareGroupResultCode.SHARE_GROUP_INFO,
                 shareGroupConverter.toShareGroupDetailInfo(shareGroup));
+    }
+
+    @GetMapping("{shareGroupId}/status")
+    @Operation(summary = "공유그룹 상태 조회 API", description = "shareGroupId로 공유그룹 상태를 조회하는 API입니다.")
+    @Parameters(value = {
+            @Parameter(name = "shareGroupId", description = "특정 공유그룹 id를 입력해 주세요.")
+    })
+    public ResultResponse<ShareGroupResponse.StatusInfo> getStatusInfo(@PathVariable(name = "shareGroupId") Long shareGroupId) {
+
+        ShareGroup shareGroup = shareGroupService.findShareGroup(shareGroupId);
+
+        return ResultResponse.of(ShareGroupResultCode.SHARE_GROUP_INFO,
+                shareGroupConverter.toShareGroupStatusInfo(shareGroup));
     }
 }

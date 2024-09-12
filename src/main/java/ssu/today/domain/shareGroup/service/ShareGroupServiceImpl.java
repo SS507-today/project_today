@@ -114,6 +114,23 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         shareGroupRepository.flush(); // 강제로 변경사항 커밋 ..
     }
 
+    // openAt 계산 로직
+    private LocalDateTime calculateOpenAt(LocalDateTime createdAt) {
+
+        // 24시간 후의 시간 계산
+        LocalDateTime after24Hours = createdAt.plusHours(24);
+
+        // 그 시간에 해당하는 날짜의 00시로 설정
+        LocalDateTime openAt = after24Hours.withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        // after24Hours가 자정 이후라면, 그날의 자정은 이미 지났기 때문에 하루를 더해 자정을 설정
+        if (after24Hours.isAfter(openAt)) {
+            openAt = openAt.plusDays(1);
+        }
+
+        return openAt;
+    }
+
     public ShareGroup findShareGroup(String inviteCode) {
         // 1. 초대 코드로 공유 그룹 조회
         ShareGroup shareGroup = shareGroupRepository.findByInviteCode(inviteCode)
@@ -133,21 +150,9 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         return shareGroup;
     }
 
-    // openAt 계산 로직
-    private LocalDateTime calculateOpenAt(LocalDateTime createdAt) {
-
-        // 24시간 후의 시간 계산
-        LocalDateTime after24Hours = createdAt.plusHours(24);
-
-        // 그 시간에 해당하는 날짜의 00시로 설정
-        LocalDateTime openAt = after24Hours.withHour(0).withMinute(0).withSecond(0).withNano(0);
-
-        // after24Hours가 자정 이후라면, 그날의 자정은 이미 지났기 때문에 하루를 더해 자정을 설정
-        if (after24Hours.isAfter(openAt)) {
-            openAt = openAt.plusDays(1);
-        }
-
-        return openAt;
+    @Override
+    public ShareGroup findShareGroup(Long shareGroupId) {
+        return shareGroupRepository.findById(shareGroupId)
+                .orElseThrow(() -> new BusinessException(SHARE_GROUP_NOT_FOUND));
     }
-
 }

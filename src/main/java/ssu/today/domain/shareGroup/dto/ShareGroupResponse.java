@@ -41,4 +41,14 @@ public abstract class ShareGroupResponse {
         private LocalDateTime createdAt;  // 생성 날짜
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class StatusInfo {
+        private Long shareGroupId;
+        private Status status;
+        private LocalDateTime openAt;
+    }
+
 }

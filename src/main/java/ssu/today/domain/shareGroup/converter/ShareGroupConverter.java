@@ -53,4 +53,13 @@ public class ShareGroupConverter {
                 .createdAt(shareGroup.getCreatedAt())
                 .build();
     }
+
+    public ShareGroupResponse.StatusInfo toShareGroupStatusInfo(ShareGroup shareGroup) {
+
+        return ShareGroupResponse.StatusInfo.builder()
+                .shareGroupId(shareGroup.getId())
+                .status(shareGroup.getStatus())
+                .openAt(shareGroup.getOpenAt())
+                .build();
+    }
 }
