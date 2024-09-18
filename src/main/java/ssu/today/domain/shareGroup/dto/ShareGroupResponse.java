@@ -30,7 +30,7 @@ public abstract class ShareGroupResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ShareGroupDetailInfo {
+    public static class ShareGroupInfo {
         private Long shareGroupId;
         private String ownerName;  // 공유그룹 생성자 닉네임
         private int memberCount;   // 그룹 인원
@@ -39,6 +39,20 @@ public abstract class ShareGroupResponse {
         private String description; // 공유그룹 소개
         @JsonFormat(pattern = "yyyy-MM-dd")
         private LocalDateTime createdAt;  // 생성 날짜
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShareGroupDetailInfo {
+        private Long shareGroupId;
+        private String groupName;
+        private int coverImage;
+        private String description;
+        private String ruleFirst;
+        private String ruleSecond;
+        private String ruleThird;
     }
 
     @Getter

@@ -11,4 +11,5 @@ public interface ShareGroupService {
     Profile joinShareGroup(Long shareGroupId, Member member);
     ShareGroup findShareGroup(String inviteCode);
     ShareGroup findShareGroup(Long shareGroupId);
+    void validateShareGroupActive(Long shareGroupId);
 }

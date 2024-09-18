@@ -28,6 +28,7 @@ import static ssu.today.global.error.code.ShareGroupErrorCode.ALREADY_JOINED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_CREATOR_NOT_FOUND;
+import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_NOT_ACTIVE;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_NOT_FOUND;
 
 @Service
@@ -193,5 +194,14 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     public ShareGroup findShareGroup(Long shareGroupId) {
         return shareGroupRepository.findById(shareGroupId)
                 .orElseThrow(() -> new BusinessException(SHARE_GROUP_NOT_FOUND));
+    }
+
+    // 공유 그룹이 ACTIVE 상태인지 검증하는 메서드
+    @Override
+    public void validateShareGroupActive(Long shareGroupId) {
+        ShareGroup shareGroup = findShareGroup(shareGroupId); // 공유 그룹 조회
+        if (shareGroup.getStatus() != Status.ACTIVE) {
+            throw new BusinessException(SHARE_GROUP_NOT_ACTIVE); // 상태가 ACTIVE가 아닐 경우 예외 발생
+        }
     }
 }
