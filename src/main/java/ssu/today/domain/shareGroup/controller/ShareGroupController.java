@@ -6,6 +6,10 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,5 +103,19 @@ public class ShareGroupController {
 
         return ResultResponse.of(ShareGroupResultCode.SHARE_GROUP_INFO,
                 shareGroupConverter.toShareGroupDetailInfo(shareGroup));
+    }
+
+    @GetMapping("/my")
+    @Operation(summary = "내가 참여한 공유그룹 목록 조회 API", description = "내가 참여한 공유그룹 목록을 페이징 처리하여 조회하는 API입니다.")
+    @Parameters(value = {
+            @Parameter(name = "page", description = "조회할 페이지를 입력해 주세요.(0번부터 시작)"),
+            @Parameter(name = "size", description = "한 페이지에 나타낼 공유그룹 개수를 입력해주세요.")
+    })
+    public ResultResponse<ShareGroupResponse.PagedShareGroupInfo> getMyShareGroupList(@LoginMember Member member,
+                                                                                      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC)
+                                                                                      @Parameter(hidden = true) Pageable pageable) {
+        Page<ShareGroup> shareGroupList = shareGroupService.getMyShareGroupList(member, pageable);
+        return ResultResponse.of(ShareGroupResultCode.SHARE_GROUP_INFO_LIST,
+                shareGroupConverter.toPagedShareGroupInfo(shareGroupList));
     }
 }

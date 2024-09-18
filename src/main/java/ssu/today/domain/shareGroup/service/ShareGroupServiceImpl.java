@@ -2,6 +2,8 @@ package ssu.today.domain.shareGroup.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import ssu.today.global.error.BusinessException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
 import static ssu.today.domain.shareGroup.entity.Status.PENDING;
@@ -168,6 +171,19 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         }
 
         return openAt;
+    }
+
+    @Override
+    public Page<ShareGroup> getMyShareGroupList(Member member, Pageable pageable) {
+        // 내 멤버id를 통해 내 profile을 가져와서, 해당 profile의 shareGroupId를 추출
+        List<Long> shareGroupIdList = profileRepository.findByMemberId(member.getId())
+                .stream()
+                .map(profile -> profile.getShareGroup().getId())
+                .collect(Collectors.toList()); // 리스트로 수집
+
+        // 추출한 공유 그룹 ID 리스트를 통해 해당 공유 그룹들을 조회하되, 상태가 ACTIVE인 것만 필터링
+        // 페이징 처리하여 가져옴
+        return shareGroupRepository.findByIdInAndStatus(shareGroupIdList, Status.ACTIVE, pageable);
     }
 
     @Override

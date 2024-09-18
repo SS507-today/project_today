@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import ssu.today.domain.shareGroup.entity.Status;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public abstract class ShareGroupResponse {
 
@@ -74,6 +75,31 @@ public abstract class ShareGroupResponse {
         private Long profileId;
         private Status status;
         private LocalDateTime joinedAt;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShareGroupSimpleInfo {
+        private Long shareGroupId;
+        private String GroupName;
+        private int coverImage;
+        private Status status;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime createdAt;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PagedShareGroupInfo {
+        private List<ShareGroupSimpleInfo> shareGroupInfoList; //공유그룹 상세 정보 리스트
+        private int page; // 페이지 번호
+        private long totalElements; // 해당 조건에 부합하는 요소의 총 개수
+        private boolean isFirst; // 첫 페이지 여부
+        private boolean isLast; // 마지막 페이지 여부
     }
 
 }
