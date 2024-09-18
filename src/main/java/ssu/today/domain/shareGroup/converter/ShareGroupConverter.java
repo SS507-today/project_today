@@ -1,13 +1,15 @@
 package ssu.today.domain.shareGroup.converter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.domain.shareGroup.entity.Status;
-import ssu.today.domain.shareGroup.service.ShareGroupService;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -16,7 +18,7 @@ public class ShareGroupConverter {
     private static final String BASE_URL = "https://today/invite/"; //baseUrl 상수
 
     // 그룹 생성 시 반환하는 정보 DTO
-    public ShareGroupResponse.InviteInfo toShareGroupInfo(ShareGroup shareGroup) {
+    public ShareGroupResponse.InviteInfo toShareGroupInviteInfo(ShareGroup shareGroup) {
         return ShareGroupResponse.InviteInfo.builder()
                 .shareGroupId(shareGroup.getId())
                 .inviteUrl(BASE_URL + shareGroup.getInviteCode())  // 초대 URL 생성
@@ -42,9 +44,9 @@ public class ShareGroupConverter {
                 .build();
     }
 
-    public ShareGroupResponse.ShareGroupDetailInfo toShareGroupDetailInfo(ShareGroup shareGroup) {
+    public ShareGroupResponse.ShareGroupInfo toShareGroupInfo(ShareGroup shareGroup) {
 
-        return ShareGroupResponse.ShareGroupDetailInfo.builder()
+        return ShareGroupResponse.ShareGroupInfo.builder()
                 .shareGroupId(shareGroup.getId())
                 .ownerName(shareGroup.getOwnerName())  // 생성자 닉네임
                 .memberCount(shareGroup.getMemberCount())
@@ -54,6 +56,20 @@ public class ShareGroupConverter {
                 .createdAt(shareGroup.getCreatedAt())
                 .build();
     }
+
+    public ShareGroupResponse.ShareGroupDetailInfo toShareGroupDetailInfo(ShareGroup shareGroup) {
+
+        return ShareGroupResponse.ShareGroupDetailInfo.builder()
+                .shareGroupId(shareGroup.getId())
+                .groupName(shareGroup.getName())
+                .coverImage(shareGroup.getCoverImage())  // 이미지 URL
+                .description(shareGroup.getDescription())
+                .ruleFirst(shareGroup.getRuleFirst())
+                .ruleSecond(shareGroup.getRuleSecond())
+                .ruleThird(shareGroup.getRuleThird())
+                .build();
+    }
+
 
     public ShareGroupResponse.StatusInfo toShareGroupStatusInfo(ShareGroup shareGroup) {
 
@@ -71,6 +87,35 @@ public class ShareGroupConverter {
                 .profileId(profile.getId())
                 .status(profile.getShareGroup().getStatus())
                 .joinedAt(profile.getJoinedAt())
+                .build();
+    }
+
+    public ShareGroupResponse.ShareGroupSimpleInfo toShareGroupSimpleInfo(ShareGroup shareGroup) {
+
+        return ShareGroupResponse.ShareGroupSimpleInfo.builder()
+                .shareGroupId(shareGroup.getId())
+                .GroupName(shareGroup.getName())
+                .coverImage(shareGroup.getCoverImage())
+                .status(shareGroup.getStatus())
+                .createdAt(shareGroup.getCreatedAt())
+                .build();
+    }
+
+    // 공유 그룹 목록 반환 DTO
+    public ShareGroupResponse.PagedShareGroupInfo toPagedShareGroupInfo(Page<ShareGroup> shareGroupList) {
+
+        // 각 공유 그룹에 대한 상세 정보를 가져오기 (DetailInfo response 재사용)
+        List<ShareGroupResponse.ShareGroupSimpleInfo> shareGroupInfoList = shareGroupList
+                .stream()
+                .map(this::toShareGroupSimpleInfo)
+                .toList();
+
+        return ShareGroupResponse.PagedShareGroupInfo.builder()
+                .shareGroupInfoList(shareGroupInfoList) // 만든 info 리스트
+                .page(shareGroupList.getNumber())
+                .totalElements(shareGroupList.getTotalElements())
+                .isFirst(shareGroupList.isFirst())
+                .isLast(shareGroupList.isLast())
                 .build();
     }
 }
