@@ -118,4 +118,27 @@ public class ShareGroupConverter {
                 .isLast(shareGroupList.isLast())
                 .build();
     }
+
+    // --- 내 차례일 때 홈 정보 응답 변환
+    public ShareGroupResponse.ShareGroupHomeInfo toMyTurnInfo(ShareGroup shareGroup) {
+        return ShareGroupResponse.ShareGroupHomeInfo.builder()
+                .isMyTurn(true)
+                .shareGroupDetailInfo(toShareGroupDetailInfo(shareGroup)) //컨버터 재사용
+                .build();
+    }
+
+    // --- 내 차례가 아닐 때의 응답 변환
+    public ShareGroupResponse.ShareGroupHomeInfo toOtherTurnInfo(Profile currentWriter) {
+        return ShareGroupResponse.ShareGroupHomeInfo
+                .builder()
+                .isMyTurn(false)
+                .currentWriter(ShareGroupResponse.CurrentWriter
+                        .builder()
+                        .profileId(currentWriter.getId())
+                        .name(currentWriter.getNickName())
+                        .description(currentWriter.getDescription())
+                        .image(currentWriter.getImage())
+                        .build())
+                .build();
+    }
 }

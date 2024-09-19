@@ -11,6 +11,7 @@ import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
 import ssu.today.domain.shareGroup.converter.ShareGroupConverter;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
+import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.Role;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
@@ -18,6 +19,7 @@ import ssu.today.domain.shareGroup.entity.Status;
 import ssu.today.domain.shareGroup.repository.ProfileRepository;
 import ssu.today.domain.shareGroup.repository.ShareGroupRepository;
 import ssu.today.global.error.BusinessException;
+import ssu.today.global.error.code.ShareGroupErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +30,7 @@ import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
 import static ssu.today.domain.shareGroup.entity.Status.PENDING;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.ALREADY_JOINED;
+import static ssu.today.global.error.code.ShareGroupErrorCode.CURRENT_WRITER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_CREATOR_NOT_FOUND;
@@ -187,6 +190,33 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     }
 
     @Override
+    public ShareGroupResponse.ShareGroupHomeInfo getShareGroupHome(Long shareGroupId, Member member) {
+        // 1. 그룹 상태 검증, active가 아니면 에러
+        validateShareGroupActive(shareGroupId);
+
+        // 2. shareGroup 가져오기
+        ShareGroup shareGroup = findShareGroup(shareGroupId);
+
+        // 3. 해당 멤버의 프로필 조회 (isMyTurn 필드 확인 위함)
+        Profile myProfile = findProfile(shareGroupId, member.getId());
+
+        if (Boolean.TRUE.equals(myProfile.getIsMyTurn())) {
+            // 내 차례일 때: 컨버터를 사용해 변환
+            return shareGroupConverter.toMyTurnInfo(shareGroup);
+
+        } else {
+            // 내 차례가 아닐 때: 현재 작성자를 조회하고, 컨버터를 사용해 변환
+            // isMyTurn이 true인 프로필을 찾아 저장
+            Profile currentWriter = shareGroup.getProfileList().stream()
+                    .filter(Profile::getIsMyTurn)
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(CURRENT_WRITER_NOT_FOUND));
+
+            return shareGroupConverter.toOtherTurnInfo(currentWriter);
+        }
+    }
+
+    @Override
     public ShareGroup findShareGroup(String inviteCode) {
         // 1. 초대 코드로 공유 그룹 조회
         ShareGroup shareGroup = shareGroupRepository.findByInviteCode(inviteCode)
@@ -219,5 +249,16 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         if (shareGroup.getStatus() != Status.ACTIVE) {
             throw new BusinessException(SHARE_GROUP_NOT_ACTIVE); // 상태가 ACTIVE가 아닐 경우 예외 발생
         }
+    }
+
+    @Override
+    public Profile findProfile(Long shareGroupId, Long memberId) {
+        return profileRepository.findByShareGroupIdAndMemberId(shareGroupId, memberId)
+                .orElseThrow(() -> new BusinessException(ShareGroupErrorCode.PROFILE_NOT_FOUND));
+    }
+
+    @Override
+    public List<Profile> findProfileListByShareGroupId(Long shareGroupId) {
+        return profileRepository.findByShareGroupId(shareGroupId);
     }
 }

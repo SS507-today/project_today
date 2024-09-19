@@ -118,4 +118,15 @@ public class ShareGroupController {
         return ResultResponse.of(ShareGroupResultCode.SHARE_GROUP_INFO_LIST,
                 shareGroupConverter.toPagedShareGroupInfo(shareGroupList));
     }
+
+    @GetMapping("/{shareGroupId}/home")
+    @Operation(summary = "교환일기 홈 화면 API", description = "특정 그룹에 대한 교환일기 홈 화면을 제공합니다.")
+    @Parameters(value = {
+            @Parameter(name = "shareGroupId", description = "특정 공유그룹 id를 입력해 주세요.")
+    })
+    public ResultResponse<?> getShareGroupHome(@PathVariable Long shareGroupId, @LoginMember Member member) {
+
+        ShareGroupResponse.ShareGroupHomeInfo response = shareGroupService.getShareGroupHome(shareGroupId, member);
+        return ResultResponse.of(ShareGroupResultCode.HOME_INFO, response);
+    }
 }
