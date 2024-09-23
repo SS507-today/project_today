@@ -79,7 +79,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // Profile 테이블에 그룹 생성자를 추가하는 로직
         Profile profile = Profile.builder()
-                .nickName(member.getNickName())   // 그룹 내 닉네임 (일단 계정의 닉네임)
+                .profileNickName(member.getNickName())   // 그룹 내 닉네임 (일단 계정의 닉네임)
                 .image(member.getImage()) // 그룹 내 이미지 (일단 계정의 이미지)
                 .description("")  // 그룹 내 소개 -> 일단 비워둠
                 .role(Role.CREATOR)         // 생성자는 creator 역할로 설정
@@ -116,7 +116,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // 4. 가입하지 않은 사용자라면, 새로운 Profile 생성
         Profile profile = Profile.builder()
-                .nickName(member.getNickName())   // 계정 닉네임 가져오기
+                .profileNickName(member.getNickName())   // 계정 닉네임 가져오기
                 .image(member.getImage())         // 계정 이미지 가져오기
                 .description("")                  // 그룹 내 소개 (빈 값이 기본)
                 .role(Role.PARTICIPANT)           // 공유그룹 오너가 아닌, 일반 멤버 역할로 참여
