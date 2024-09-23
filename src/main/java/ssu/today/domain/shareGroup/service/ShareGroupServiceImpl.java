@@ -253,12 +253,24 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
     @Override
     public Profile findProfile(Long shareGroupId, Long memberId) {
+        //공유그룹 존재하는지 검증
+        findShareGroup(shareGroupId);
+
         return profileRepository.findByShareGroupIdAndMemberId(shareGroupId, memberId)
                 .orElseThrow(() -> new BusinessException(ShareGroupErrorCode.PROFILE_NOT_FOUND));
     }
 
     @Override
+    public Profile findProfile(Long profileId) {
+        return profileRepository.findById(profileId)
+                .orElseThrow(() -> new BusinessException(ShareGroupErrorCode.PROFILE_NOT_FOUND));
+    }
+
+    @Override
     public List<Profile> findProfileListByShareGroupId(Long shareGroupId) {
+        //공유그룹 존재하는지 검증
+        findShareGroup(shareGroupId);
+
         return profileRepository.findByShareGroupId(shareGroupId);
     }
 }
