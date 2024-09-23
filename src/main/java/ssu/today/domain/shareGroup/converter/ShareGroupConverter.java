@@ -135,7 +135,7 @@ public class ShareGroupConverter {
                 .currentWriter(ShareGroupResponse.CurrentWriter
                         .builder()
                         .profileId(currentWriter.getId())
-                        .name(currentWriter.getNickName())
+                        .name(currentWriter.getProfileNickName())
                         .description(currentWriter.getDescription())
                         .image(currentWriter.getImage())
                         .build())

@@ -230,7 +230,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         // 3. 공유그룹 오너의 이름을 확인
         Profile creatorProfile = profileRepository.findByShareGroupAndRole(shareGroup, Role.CREATOR)
                 .orElseThrow(() -> new BusinessException(SHARE_GROUP_CREATOR_NOT_FOUND));  // 생성자가 없으면 예외 발생
-        String ownerName = creatorProfile.getNickName();
+        String ownerName = creatorProfile.getProfileNickName();
         shareGroup.setOwnerName(ownerName);
 
         return shareGroup;

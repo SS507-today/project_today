@@ -34,7 +34,7 @@ public class Profile {
     @Column(name = "profile_id")
     private Long id;
     @Column(name = "name", nullable = false)
-    private String nickName; // 그룹 내 닉네임
+    private String profileNickName; // 그룹 내 닉네임
     @Column(name = "image", length = 2000)
     private String image; // 그룹 내 이미지
     @Column(name = "description", length = 30)
