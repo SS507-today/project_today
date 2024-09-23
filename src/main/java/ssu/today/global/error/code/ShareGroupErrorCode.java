@@ -16,7 +16,8 @@ public enum ShareGroupErrorCode implements ErrorCode {
     SHARE_GROUP_CREATOR_NOT_FOUND(400, "EG007", "공유 그룹 생성자의 프로필이 존재하지 않습니다."),
     UNAUTHORIZED_DELETE(403, "EG008", "공유 그룹을 삭제할 권한이 없습니다."),
     ALREADY_JOINED(400, "EG009", "이미 해당 공유 그룹에 참여하였습니다."),
-    SHARE_GROUP_NOT_ACTIVE(400, "EG010", "공유그룹이 아직 활성화되지 않았습니다.");
+    SHARE_GROUP_NOT_ACTIVE(400, "EG010", "공유그룹이 아직 활성화되지 않았습니다."),
+    CURRENT_WRITER_NOT_FOUND(400, "EG010", "현재 일기를 쓸 차례인 프로필 회원이 존재하지 않습니다.")
     ;
 
     private final int status;

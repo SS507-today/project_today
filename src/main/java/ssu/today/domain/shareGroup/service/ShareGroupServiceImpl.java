@@ -11,6 +11,7 @@ import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
 import ssu.today.domain.shareGroup.converter.ShareGroupConverter;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
+import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.Role;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
@@ -18,6 +19,7 @@ import ssu.today.domain.shareGroup.entity.Status;
 import ssu.today.domain.shareGroup.repository.ProfileRepository;
 import ssu.today.domain.shareGroup.repository.ShareGroupRepository;
 import ssu.today.global.error.BusinessException;
+import ssu.today.global.error.code.ShareGroupErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +30,7 @@ import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
 import static ssu.today.domain.shareGroup.entity.Status.PENDING;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.ALREADY_JOINED;
+import static ssu.today.global.error.code.ShareGroupErrorCode.CURRENT_WRITER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_CREATOR_NOT_FOUND;
@@ -76,7 +79,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // Profile 테이블에 그룹 생성자를 추가하는 로직
         Profile profile = Profile.builder()
-                .nickName(member.getNickName())   // 그룹 내 닉네임 (일단 계정의 닉네임)
+                .profileNickName(member.getNickName())   // 그룹 내 닉네임 (일단 계정의 닉네임)
                 .image(member.getImage()) // 그룹 내 이미지 (일단 계정의 이미지)
                 .description("")  // 그룹 내 소개 -> 일단 비워둠
                 .role(Role.CREATOR)         // 생성자는 creator 역할로 설정
@@ -113,7 +116,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // 4. 가입하지 않은 사용자라면, 새로운 Profile 생성
         Profile profile = Profile.builder()
-                .nickName(member.getNickName())   // 계정 닉네임 가져오기
+                .profileNickName(member.getNickName())   // 계정 닉네임 가져오기
                 .image(member.getImage())         // 계정 이미지 가져오기
                 .description("")                  // 그룹 내 소개 (빈 값이 기본)
                 .role(Role.PARTICIPANT)           // 공유그룹 오너가 아닌, 일반 멤버 역할로 참여
@@ -187,6 +190,33 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     }
 
     @Override
+    public ShareGroupResponse.ShareGroupHomeInfo getShareGroupHome(Long shareGroupId, Member member) {
+        // 1. 그룹 상태 검증, active가 아니면 에러
+        validateShareGroupActive(shareGroupId);
+
+        // 2. shareGroup 가져오기
+        ShareGroup shareGroup = findShareGroup(shareGroupId);
+
+        // 3. 해당 멤버의 프로필 조회 (isMyTurn 필드 확인 위함)
+        Profile myProfile = findProfile(shareGroupId, member.getId());
+
+        if (Boolean.TRUE.equals(myProfile.getIsMyTurn())) {
+            // 내 차례일 때: 컨버터를 사용해 변환
+            return shareGroupConverter.toMyTurnInfo(shareGroup);
+
+        } else {
+            // 내 차례가 아닐 때: 현재 작성자를 조회하고, 컨버터를 사용해 변환
+            // isMyTurn이 true인 프로필을 찾아 저장
+            Profile currentWriter = shareGroup.getProfileList().stream()
+                    .filter(Profile::getIsMyTurn)
+                    .findFirst()
+                    .orElseThrow(() -> new BusinessException(CURRENT_WRITER_NOT_FOUND));
+
+            return shareGroupConverter.toOtherTurnInfo(currentWriter);
+        }
+    }
+
+    @Override
     public ShareGroup findShareGroup(String inviteCode) {
         // 1. 초대 코드로 공유 그룹 조회
         ShareGroup shareGroup = shareGroupRepository.findByInviteCode(inviteCode)
@@ -200,7 +230,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         // 3. 공유그룹 오너의 이름을 확인
         Profile creatorProfile = profileRepository.findByShareGroupAndRole(shareGroup, Role.CREATOR)
                 .orElseThrow(() -> new BusinessException(SHARE_GROUP_CREATOR_NOT_FOUND));  // 생성자가 없으면 예외 발생
-        String ownerName = creatorProfile.getNickName();
+        String ownerName = creatorProfile.getProfileNickName();
         shareGroup.setOwnerName(ownerName);
 
         return shareGroup;
@@ -219,5 +249,16 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         if (shareGroup.getStatus() != Status.ACTIVE) {
             throw new BusinessException(SHARE_GROUP_NOT_ACTIVE); // 상태가 ACTIVE가 아닐 경우 예외 발생
         }
+    }
+
+    @Override
+    public Profile findProfile(Long shareGroupId, Long memberId) {
+        return profileRepository.findByShareGroupIdAndMemberId(shareGroupId, memberId)
+                .orElseThrow(() -> new BusinessException(ShareGroupErrorCode.PROFILE_NOT_FOUND));
+    }
+
+    @Override
+    public List<Profile> findProfileListByShareGroupId(Long shareGroupId) {
+        return profileRepository.findByShareGroupId(shareGroupId);
     }
 }

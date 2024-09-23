@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,6 +19,8 @@ import org.hibernate.annotations.SQLRestriction;
 import ssu.today.global.entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "share_groups")
@@ -52,6 +55,10 @@ public class ShareGroup extends BaseTimeEntity {
     private LocalDateTime openAt;  // 새로운 openAt 필드 추가
 
     private String ownerName; //공유그룹 오너의 이름
+
+    @OneToMany(mappedBy = "shareGroup")
+    @Builder.Default
+    private List<Profile> profileList = new ArrayList<>();
 
     @Setter
     @Enumerated(EnumType.STRING)

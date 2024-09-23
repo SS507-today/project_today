@@ -102,4 +102,27 @@ public abstract class ShareGroupResponse {
         private boolean isLast; // 마지막 페이지 여부
     }
 
+    // 내 차례일 때와 아닐 때의 구조를 하나의 공통된 응답 구조로 만듦.
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShareGroupHomeInfo {
+        private boolean isMyTurn;
+        private ShareGroupDetailInfo shareGroupDetailInfo;  // 내 차례일 때 사용
+        private CurrentWriter currentWriter;    // 내 차례가 아닐 때 사용
+    }
+
+    // 현재 작성자 정보
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CurrentWriter {
+        private Long profileId;
+        private String name;
+        private String description;
+        private String image;
+    }
+
 }

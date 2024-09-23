@@ -15,4 +15,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByShareGroupAndRole(ShareGroup shareGroup, Role role);
     boolean existsByShareGroupIdAndMemberId(Long shareGroupId, Long memberId);
     List<Profile> findByMemberId(Long memberId);
+    Optional<Profile> findByShareGroupIdAndMemberId(Long shareGroupId, Long memberId);
+    List<Profile> findByShareGroupId(Long shareGroupId);
 }
