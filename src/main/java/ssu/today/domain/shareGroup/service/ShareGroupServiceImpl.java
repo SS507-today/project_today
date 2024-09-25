@@ -109,9 +109,8 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         }
 
         // 3. 이미 그룹에 참여 중인 멤버인지 확인 (중복 가입 방지)
-        boolean alreadyJoined = profileRepository.existsByShareGroupIdAndMemberId(shareGroupId, member.getId());
-        if (alreadyJoined) {
-            throw new BusinessException(ALREADY_JOINED);
+        if (doesProfileExist(shareGroupId, member.getId())) {
+            throw new BusinessException(ShareGroupErrorCode.ALREADY_JOINED);
         }
 
         // 4. 가입하지 않은 사용자라면, 새로운 Profile 생성
@@ -272,5 +271,10 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         findShareGroup(shareGroupId);
 
         return profileRepository.findByShareGroupId(shareGroupId);
+    }
+
+    @Override
+    public boolean doesProfileExist(Long shareGroupId, Long memberId) {
+        return profileRepository.existsByShareGroupIdAndMemberId(shareGroupId, memberId);
     }
 }
