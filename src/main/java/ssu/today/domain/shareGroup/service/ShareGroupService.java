@@ -21,4 +21,6 @@ public interface ShareGroupService {
     ShareGroupResponse.ShareGroupHomeInfo getShareGroupHome(Long shareGroupId, Member member);
     Profile findProfile(Long shareGroupId, Long memberId);
     List<Profile> findProfileListByShareGroupId(Long shareGroupId);
+    Profile findProfile(Long profileId);
+    boolean doesProfileExist(Long shareGroupId, Long memberId);
 }
