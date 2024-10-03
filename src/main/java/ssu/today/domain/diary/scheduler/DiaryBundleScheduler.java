@@ -76,7 +76,7 @@ public class DiaryBundleScheduler {
      * 새로운 번들을 생성해야 하는지 여부를 결정하는 함수
      * @param latestBundle 가장 최신 번들
      * @param shareGroup 공유 그룹
-     * @return 새로운 번들을 생성해야 하면 true 반환
+     * @return 새로운 번들을 생성해야 하면 true를 반환
      */
     private boolean shouldCreateNewBundle(DiaryBundle latestBundle, ShareGroup shareGroup) {
         // 최신 번들의 종료일이 지났으면 새로운 번들을 생성해야 함
