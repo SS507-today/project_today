@@ -17,4 +17,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     List<Profile> findByMemberId(Long memberId);
     Optional<Profile> findByShareGroupIdAndMemberId(Long shareGroupId, Long memberId);
     List<Profile> findByShareGroupId(Long shareGroupId);
+    // 특정 프로필 ID 리스트로 프로필 목록 조회
+    List<Profile> findByIdIn(List<Long> profileIds);
 }

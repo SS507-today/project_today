@@ -9,39 +9,30 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
 import ssu.today.domain.shareGroup.entity.Profile;
-import ssu.today.global.entity.BaseTimeEntity;
 
 @Entity
-@Table(name = "diaries")
-@SQLRestriction("deleted_at is NULL")
+@Table(name = "tags")
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-public class Diary extends BaseTimeEntity {
+public class Tag {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "diary_id")
+    @Column(name = "tag_id")
     private Long id;
-    @Column(nullable = false, length = 1000)
-    private String finalDiaryImage;
 
-    // 작성자의 프로필 ID를 저장
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_profile_id")
-    private Profile writerProfile;
+    @JoinColumn(name = "diary_id")
+    private Diary diary;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_bundle_id")
-    private DiaryBundle diaryBundle;
 }
