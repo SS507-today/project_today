@@ -169,6 +169,10 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     @Transactional(readOnly = true)
     public List<Diary> getDiariesByBundle(Long bundleId, Long shareGroupId) {
+        // 1. 번들 ID가 유효한지 확인
+        if (!diaryBundleRepository.existsById(bundleId)) {
+            throw new BusinessException(DIARY_BUNDLE_NOT_FOUND);
+        }
 
         // 특정 번들에 속한 다이어리들을 최신순으로 조회해서 리턴
         return diaryRepository.findAllByDiaryBundle_IdAndDiaryBundle_ShareGroup_IdOrderByCreatedAtDesc(bundleId, shareGroupId);
