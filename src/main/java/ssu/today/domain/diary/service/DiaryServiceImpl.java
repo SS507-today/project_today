@@ -18,7 +18,7 @@ import ssu.today.domain.diary.entity.DiaryBundle;
 import ssu.today.domain.diary.entity.DiaryTag;
 import ssu.today.domain.diary.repository.DiaryBundleRepository;
 import ssu.today.domain.diary.repository.DiaryRepository;
-import ssu.today.domain.diary.repository.TagRepository;
+import ssu.today.domain.diary.repository.DiaryTagRepository;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
@@ -31,9 +31,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static ssu.today.global.error.code.DiaryErrorCode.DIARY_BUNDLE_NOT_FOUND;
+import static ssu.today.global.error.code.DiaryErrorCode.DIARY_NOT_FOUND;
 import static ssu.today.global.error.code.DiaryErrorCode.INVALID_TAG_PROFILE;
+import static ssu.today.global.error.code.ShareGroupErrorCode.PROFILE_NOT_FOUND;
 
 @Service
 @Transactional
@@ -47,7 +50,7 @@ public class DiaryServiceImpl implements DiaryService {
     private final DiaryRepository diaryRepository;
     private final ProfileRepository profileRepository;
     private final DiaryBundleRepository diaryBundleRepository;
-    private final TagRepository tagRepository;
+    private final DiaryTagRepository diaryTagRepository;
     private final ShareGroupService shareGroupService;
 
     // 파일 업로드용 임시 url인 presigned url을 생성해서 프론트한테 반환
@@ -99,7 +102,7 @@ public class DiaryServiceImpl implements DiaryService {
                         .diary(diary)
                         .profile(taggedProfile)
                         .build();
-                tagRepository.save(tag);  // 태그 저장
+                diaryTagRepository.save(tag);  // 태그 저장
             }
         }
 
@@ -179,4 +182,21 @@ public class DiaryServiceImpl implements DiaryService {
         return diaryBundleRepository.findByShareGroupId(shareGroupId, pageable);
     }
 
+
+    @Override
+    public List<Profile> getTaggedProfilesList(Long diaryId) {
+
+        // 다이어리 ID로 다이어리 존재 여부 확인
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new BusinessException(DIARY_NOT_FOUND));
+
+        // 다이어리 ID를 통해 태그된 DiaryTag 목록을 조회하고, 해당 프로필을 추출하면서 DB에 존재하는지 검증
+        List<Profile> taggedProfiles = diaryTagRepository.findAllByDiaryId(diaryId).stream()
+                .map(diaryTag -> profileRepository.findById(diaryTag.getProfile().getId())
+                        .orElseThrow(() -> new BusinessException(PROFILE_NOT_FOUND)))  // 프로필이 DB에 존재하는지 확인
+                .collect(Collectors.toList());
+
+        // 태그된 프로필 리스트가 비어있다면 null 반환
+        return taggedProfiles.isEmpty() ? null : taggedProfiles;
+    }
 }

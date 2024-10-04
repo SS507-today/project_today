@@ -74,4 +74,5 @@ public abstract class DiaryResponse {
         private String startDate;
         private String endDate;
     }
+
 }

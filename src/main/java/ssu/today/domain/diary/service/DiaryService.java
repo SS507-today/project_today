@@ -7,6 +7,7 @@ import ssu.today.domain.diary.dto.DiaryResponse;
 import ssu.today.domain.diary.entity.Diary;
 import ssu.today.domain.diary.entity.DiaryBundle;
 import ssu.today.domain.member.entity.Member;
+import ssu.today.domain.shareGroup.entity.Profile;
 
 import java.util.List;
 import java.util.Map;
@@ -16,4 +17,5 @@ public interface DiaryService {
     DiaryResponse.UploadInfo uploadDiary(DiaryRequest.DiaryUploadRequest request, Member member);
     List<Diary> getDiariesByBundle(Long shareGroupId, Long bundleId);
     Page<DiaryBundle> getDiaryBundleList(Long shareGroupId, Pageable pageable);
+    List<Profile> getTaggedProfilesList(Long diaryId);
 }
