@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,10 +32,8 @@ public class DiaryBundle {
     @Column(name = "diary_bundle_id")
     private Long id;
     @Column(name = "started_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startedAt;
     @Column(name = "ended_at")
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

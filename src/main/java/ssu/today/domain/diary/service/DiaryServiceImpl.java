@@ -8,6 +8,8 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.today.domain.diary.dto.DiaryRequest;
@@ -160,6 +162,14 @@ public class DiaryServiceImpl implements DiaryService {
 
         // 특정 번들에 속한 다이어리들을 최신순으로 조회해서 리턴
         return diaryRepository.findAllByDiaryBundle_IdAndDiaryBundle_ShareGroup_IdOrderByCreatedAtDesc(bundleId, shareGroupId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<DiaryBundle> getDiaryBundleList(Long shareGroupId, Pageable pageable) {
+
+        // 특정 공유 그룹 ID를 통해 다이어리 번들을 페이징하여 가져오기
+        return diaryBundleRepository.findByShareGroupId(shareGroupId, pageable);
     }
 
 }
