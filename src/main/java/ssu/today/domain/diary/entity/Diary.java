@@ -32,12 +32,6 @@ public class Diary extends BaseTimeEntity {
     private Long id;
     @Column(nullable = false, length = 1000)
     private String finalDiaryImage;
-
-    // 작성자의 프로필 ID를 저장
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_profile_id")
-    private Profile writerProfile;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;

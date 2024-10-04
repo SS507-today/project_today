@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import ssu.today.domain.shareGroup.dto.ProfileResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
 public class ProfileConverter {
@@ -20,6 +23,24 @@ public class ProfileConverter {
                 .role(profile.getRole())
                 .isMyTurn(profile.getIsMyTurn())
                 .joinedAt(profile.getJoinedAt())
+                .build();
+    }
+
+    // 태그된 프로필 리스트 정보 반환 DTO
+    public ProfileResponse.TaggedProfileList toTaggedProfileList(Long diaryId, List<Profile> profiles) {
+        List<ProfileResponse.TaggedProfile> taggedProfileList = profiles.stream()
+                .map(profile -> ProfileResponse.TaggedProfile
+                        .builder()
+                        .profileId(profile.getId())
+                        .name(profile.getProfileNickName())
+                        .image(profile.getImage())
+                        .build())
+                .collect(Collectors.toList());
+
+        return ProfileResponse.TaggedProfileList
+                .builder()
+                .diaryId(diaryId)
+                .taggedMembersList(taggedProfileList)
                 .build();
     }
 }

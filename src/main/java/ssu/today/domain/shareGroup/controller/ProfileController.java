@@ -5,27 +5,24 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ssu.today.domain.diary.service.DiaryService;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.shareGroup.converter.ProfileConverter;
 import ssu.today.domain.shareGroup.dto.ProfileResponse;
-import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
-import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.domain.shareGroup.service.ShareGroupService;
 import ssu.today.global.result.ResultResponse;
 import ssu.today.global.result.code.ProfileResultCode;
-import ssu.today.global.result.code.ShareGroupResultCode;
 import ssu.today.global.security.annotation.LoginMember;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static ssu.today.global.result.code.DiaryResultCode.TAGGED_MEMBERS_LIST;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +32,7 @@ public class ProfileController {
 
     private final ShareGroupService shareGroupService;
     private final ProfileConverter profileConverter;
+    private final DiaryService diaryService;
 
     @GetMapping("/{profileId}")
     @Operation(summary = "특정 profileId로 프로필 조회 API", description = "profileId로 특정 프로필을 조회하는 API입니다.")
@@ -85,4 +83,18 @@ public class ProfileController {
         return ResultResponse.of(ProfileResultCode.PROFILE_INFO_LIST, profileInfos);
     }
 
+
+
+    // 다이어리에 태그된 프로필 조회 API
+    @GetMapping("/diaries/{diaryId}/tagged")
+    @Operation(summary = "태그된 프로필 조회 API", description = "특정 다이어리에 태그된 프로필 리스트를 조회하는 API입니다.")
+    public ResultResponse<ProfileResponse.TaggedProfileList> getTaggedProfiles(@PathVariable Long diaryId) {
+
+        // 다이어리 ID를 통해 태그된 프로필 리스트를 조회하고, 컨버터로 변환
+        List<Profile> taggedProfileList = diaryService.getTaggedProfilesList(diaryId);
+
+        // 변환된 프로필 정보 반환
+        return ResultResponse.of(TAGGED_MEMBERS_LIST,
+                profileConverter.toTaggedProfileList(diaryId, taggedProfileList));
+    }
 }

@@ -25,6 +25,7 @@ public abstract class DiaryRequest {
     @AllArgsConstructor
     public static class DiaryUploadRequest {
         private Long shareGroupId;
+        @NotEmpty(message = "이미지는 누락될 수 없습니다.")
         private String finalImageUrl;         // 최종 일기 이미지 URL
         private List<Long> taggedProfileId;   // 태그된 프로필 ID 리스트
     }
