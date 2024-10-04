@@ -22,7 +22,6 @@ import ssu.today.domain.shareGroup.entity.Profile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tag {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")

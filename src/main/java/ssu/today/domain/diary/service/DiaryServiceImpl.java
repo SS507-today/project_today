@@ -64,7 +64,7 @@ public class DiaryServiceImpl implements DiaryService {
     @Override
     public DiaryResponse.UploadInfo uploadDiary(DiaryRequest.DiaryUploadRequest request, Member member) {
         // 0. 공유그룹 active 상태인지 검증
-        // shareGroupService.validateShareGroupActive(request.getShareGroupId());
+        shareGroupService.validateShareGroupActive(request.getShareGroupId());
 
         // 1. 다이어리를 작성한 작성자의 프로필 정보 가져오기
         Profile writerProfile = shareGroupService.findProfile(request.getShareGroupId(), member.getId());
@@ -154,5 +154,12 @@ public class DiaryServiceImpl implements DiaryService {
 
     /////////////// 아래로는 조회 부분
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Diary> getDiariesByBundle(Long bundleId, Long shareGroupId) {
+
+        // 특정 번들에 속한 다이어리들을 최신순으로 조회해서 리턴
+        return diaryRepository.findAllByDiaryBundle_IdAndDiaryBundle_ShareGroup_IdOrderByCreatedAtDesc(bundleId, shareGroupId);
+    }
 
 }

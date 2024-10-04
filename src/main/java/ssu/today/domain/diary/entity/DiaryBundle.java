@@ -1,5 +1,6 @@
 package ssu.today.domain.diary.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,8 +31,10 @@ public class DiaryBundle {
     @Column(name = "diary_bundle_id")
     private Long id;
     @Column(name = "started_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startedAt;
     @Column(name = "ended_at")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime endedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

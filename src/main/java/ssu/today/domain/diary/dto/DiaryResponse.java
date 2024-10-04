@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public abstract class DiaryResponse {
 
@@ -26,5 +27,29 @@ public abstract class DiaryResponse {
         private Long diaryId;
         private Long bundleId;
         private LocalDateTime createdAt;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DiaryBundleInfo {
+        private Long shareGroupId;
+        private Long bundleId;
+        private List<DiaryInfo> diaries;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DiaryInfo {
+        private Long diaryId;
+        private Long writerProfileId;
+        private String writerProfileImage;
+        private String writerNickname;
+        private String writerDescription;
+        private String finalDiaryImage;
+        private String createdAt;
     }
 }
