@@ -277,4 +277,23 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     public boolean doesProfileExist(Long shareGroupId, Long memberId) {
         return profileRepository.existsByShareGroupIdAndMemberId(shareGroupId, memberId);
     }
+
+    @Override
+    public ShareGroup leaveShareGroup(Long shareGroupId, Member member) {
+
+        // 1. 공유 그룹이 존재하는지 검증
+        ShareGroup shareGroup = findShareGroup(shareGroupId);
+
+        // 2. 멤버가 해당 공유 그룹에 속한 프로필인지 확인
+        Profile profile = findProfile(shareGroupId, member.getId());
+
+        // 3. 해당 프로필 삭제 (논리적 삭제, deletedAt 설정)
+        profile.delete();
+
+        // 4. 삭제된 프로필을 저장
+        profileRepository.save(profile);
+
+        // 5. 공유 그룹 리턴
+        return shareGroup;
+    }
 }

@@ -125,4 +125,12 @@ public abstract class ShareGroupResponse {
         private String image;
     }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShareGroupId {
+        private Long shareGroupId;
+    }
+
 }
