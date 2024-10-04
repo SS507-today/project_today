@@ -6,7 +6,6 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,7 @@ import ssu.today.domain.diary.dto.DiaryRequest;
 import ssu.today.domain.diary.dto.DiaryResponse;
 import ssu.today.domain.diary.entity.Diary;
 import ssu.today.domain.diary.entity.DiaryBundle;
-import ssu.today.domain.diary.entity.Tag;
+import ssu.today.domain.diary.entity.DiaryTag;
 import ssu.today.domain.diary.repository.DiaryBundleRepository;
 import ssu.today.domain.diary.repository.DiaryRepository;
 import ssu.today.domain.diary.repository.TagRepository;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static ssu.today.global.error.code.DiaryErrorCode.DIARY_BUNDLE_NOT_FOUND;
+import static ssu.today.global.error.code.DiaryErrorCode.INVALID_TAG_PROFILE;
 
 @Service
 @Transactional
@@ -84,11 +84,18 @@ public class DiaryServiceImpl implements DiaryService {
 
         // 4. 태그된 프로필 ID 리스트가 비어있지 않으면 처리
         if (request.getTaggedProfileId() != null && !request.getTaggedProfileId().isEmpty()) {
+
+            // 태그한 프로필 리스트
             List<Profile> taggedProfiles = profileRepository.findByIdIn(request.getTaggedProfileId());
+
+            // 태그된 프로필 중에서 하나라도 존재하지 않거나 유효하지 않으면 예외 발생
+            if (taggedProfiles.size() != request.getTaggedProfileId().size()) {
+                throw new BusinessException(INVALID_TAG_PROFILE);
+            }
 
             // 태그 정보 저장
             for (Profile taggedProfile : taggedProfiles) {
-                Tag tag = Tag.builder()
+                DiaryTag tag = DiaryTag.builder()
                         .diary(diary)
                         .profile(taggedProfile)
                         .build();
