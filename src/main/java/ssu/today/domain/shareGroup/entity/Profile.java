@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,9 +18,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
+import ssu.today.domain.diary.entity.DiaryTag;
 import ssu.today.domain.member.entity.Member;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "profiles")
@@ -61,7 +65,14 @@ public class Profile {
         this.joinedAt = LocalDateTime.now();
     }
 
+    @OneToMany(mappedBy = "profile")
+    @Builder.Default
+    private List<DiaryTag> diaryTagList = new ArrayList<>();
+
     public void delete() {
+        for (DiaryTag diaryTag : diaryTagList) {
+            diaryTag.delete();
+        }
         this.deletedAt = LocalDateTime.now();
     }
 }
