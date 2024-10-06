@@ -33,9 +33,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static ssu.today.global.error.code.DiaryErrorCode.ALREADY_EXISTS_DIARY;
 import static ssu.today.global.error.code.DiaryErrorCode.DIARY_BUNDLE_NOT_FOUND;
 import static ssu.today.global.error.code.DiaryErrorCode.DIARY_NOT_FOUND;
 import static ssu.today.global.error.code.DiaryErrorCode.INVALID_TAG_PROFILE;
+import static ssu.today.global.error.code.DiaryErrorCode.NOT_YOUR_TURN;
 import static ssu.today.global.error.code.ShareGroupErrorCode.PROFILE_NOT_FOUND;
 
 @Service
@@ -74,8 +76,19 @@ public class DiaryServiceImpl implements DiaryService {
         // 1. 다이어리를 작성한 작성자의 프로필 정보 가져오기
         Profile writerProfile = shareGroupService.findProfile(request.getShareGroupId(), member.getId());
 
+        // 잠깐! 작성자가 다이어리를 업로드할 차례인지 검증 (isMyTurn)
+        if (!writerProfile.getIsMyTurn()) {
+            throw new BusinessException(NOT_YOUR_TURN);
+        }
+
         // 2. 가장 최신 DiaryBundle 가져오기
         DiaryBundle latestBundle = findLatestDiaryBundle(request.getShareGroupId());
+
+        // 잠깐! 그 최신 DiaryBundle 내에서 해당 프로필로 이미 작성된 다이어리가 있는지 확인
+        int existingDiaryCount = diaryRepository.countByDiaryBundleAndProfile(latestBundle, writerProfile);
+        if (existingDiaryCount >= 1) {
+            throw new BusinessException(ALREADY_EXISTS_DIARY);
+        }
 
         // 3. 다이어리 생성 및 저장
         Diary diary = Diary.builder()
