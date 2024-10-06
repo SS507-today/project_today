@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 import ssu.today.domain.member.entity.Member;
 
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 @Table(name = "profiles")
 @SQLRestriction("deleted_at is NULL")
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor

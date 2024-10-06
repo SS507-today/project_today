@@ -23,4 +23,5 @@ public interface ShareGroupService {
     List<Profile> findProfileListByShareGroupId(Long shareGroupId);
     Profile findProfile(Long profileId);
     boolean doesProfileExist(Long shareGroupId, Long memberId);
+    List<ShareGroup> getActiveShareGroups();
 }

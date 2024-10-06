@@ -277,4 +277,10 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     public boolean doesProfileExist(Long shareGroupId, Long memberId) {
         return profileRepository.existsByShareGroupIdAndMemberId(shareGroupId, memberId);
     }
+
+    // ACTIVE 상태의 공유 그룹 리스트 반환
+    @Override
+    public List<ShareGroup> getActiveShareGroups() {
+        return shareGroupRepository.findByStatus(ACTIVE);
+    }
 }
