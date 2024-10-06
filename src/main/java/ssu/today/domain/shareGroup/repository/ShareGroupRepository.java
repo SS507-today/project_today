@@ -19,4 +19,6 @@ public interface ShareGroupRepository extends JpaRepository<ShareGroup, Long> {
     //페이징 처리해서 shareGroup 가져오기
     Page<ShareGroup> findByIdIn(List<Long> shareGroupIds, Pageable pageable);
     Page<ShareGroup> findByIdInAndStatus(List<Long> ids, Status status, Pageable pageable);
+    // 상태가 ACTIVE인 모든 공유 그룹 조회
+    List<ShareGroup> findByStatus(Status status);
 }
