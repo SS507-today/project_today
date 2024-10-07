@@ -26,7 +26,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 // JWT 기반의 인증을 적용하고, 특정 경로에 대한 접근 권한을 설정하며, Swagger 경로와 같은 특정 경로를 필터링에서 제외하는 역할
 public class SecurityConfig {
     private final JwtTokenService jwtTokenService;
-    private final MemberService memberService;
     private final MemberRepository memberRepository;
 
     // AuthenticationManager를 빈으로 등록. 이 빈은 인증을 처리하는 데 사용됨
