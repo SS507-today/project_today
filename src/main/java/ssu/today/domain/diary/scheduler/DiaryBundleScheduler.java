@@ -64,7 +64,7 @@ public class DiaryBundleScheduler {
 
         // 현재 시간을 기준으로 번들의 시작과 종료일 설정
         LocalDateTime startedAt = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);  // 오늘 자정
-        LocalDateTime endedAt = startedAt.plusDays(shareGroup.getMemberCount());
+        LocalDateTime endedAt = startedAt.plusDays(shareGroup.getMemberCount() - 1);
 
         DiaryBundle newBundle = DiaryBundle.builder()
                 .shareGroup(shareGroup)
