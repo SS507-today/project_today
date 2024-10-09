@@ -103,7 +103,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         // 1. 해당 공유 그룹 조회
         ShareGroup shareGroup = findShareGroup(shareGroupId);
 
-        // 2. PENDING 상태가 아닌 경우 참여 불가
+        // 2. PENDING 상태가 아닌 경우 (이미 그룹 시작했으면) 참여 불가
         if (shareGroup.getStatus() != Status.PENDING) {
             throw new BusinessException(SHARE_GROUP_ALREADY_STARTED);
         }
@@ -156,9 +156,9 @@ public class ShareGroupServiceImpl implements ShareGroupService {
                 .map(profile -> profile.getShareGroup().getId())
                 .collect(Collectors.toList()); // 리스트로 수집
 
-        // 추출한 공유 그룹 ID 리스트를 통해 해당 공유 그룹들을 조회하되, 상태가 ACTIVE인 것만 필터링
+        // 추출한 공유 그룹 ID 리스트를 통해 해당 공유 그룹들을 조회 + pending 인것도 조회.
         // 페이징 처리하여 가져옴
-        return shareGroupRepository.findByIdInAndStatus(shareGroupIdList, Status.ACTIVE, pageable);
+        return shareGroupRepository.findByIdIn(shareGroupIdList, pageable);
     }
 
     @Override
