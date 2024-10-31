@@ -15,10 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ssu.today.domain.shareGroup.entity.Profile;
-import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.global.entity.BaseTimeEntity;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "diary_tags")

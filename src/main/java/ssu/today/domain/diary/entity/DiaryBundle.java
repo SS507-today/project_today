@@ -1,6 +1,5 @@
 package ssu.today.domain.diary.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,11 +15,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.entity.ShareGroup;
 import ssu.today.global.entity.BaseTimeEntity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

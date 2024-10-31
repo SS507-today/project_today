@@ -3,6 +3,7 @@ package ssu.today.domain.member.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public abstract class MemberResponse {
 
@@ -29,5 +30,13 @@ public abstract class MemberResponse {
         private String name;
         private String nickName;
         private String image;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MemberId {
+        private Long memberId;
     }
 }

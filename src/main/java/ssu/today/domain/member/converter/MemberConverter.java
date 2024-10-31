@@ -55,4 +55,12 @@ public class MemberConverter {
                 .build();
     }
 
+    // member Id만 반환 (회원탈톼 시 반환하는 DTO)
+    public MemberResponse.MemberId toMemberId(Member member) {
+        return MemberResponse.MemberId
+                .builder()
+                .memberId(member.getId())
+                .build();
+    }
+
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
+import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.global.entity.BaseTimeEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "members")
@@ -49,5 +54,16 @@ public class Member extends BaseTimeEntity {
         this.name = name;
         this.image = image;
         return this;
+    }
+
+    @OneToMany(mappedBy = "member")
+    @Builder.Default
+    private List<Profile> profileList = new ArrayList<>();
+
+    public void delete() {
+        for (Profile profile : profileList) {
+            profile.delete();
+        }
+        super.delete();
     }
 }

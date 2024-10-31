@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
-import ssu.today.domain.diary.entity.Diary;
 import ssu.today.domain.diary.entity.DiaryBundle;
 import ssu.today.global.entity.BaseTimeEntity;
 

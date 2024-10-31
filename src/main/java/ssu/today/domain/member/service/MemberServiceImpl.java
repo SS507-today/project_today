@@ -109,6 +109,16 @@ public class MemberServiceImpl implements MemberService {
         return memberConverter.toNickNameInfo(member);
     }
 
+    @Transactional
+    public Member deleteMember(Member member) {
+
+        // 해당 멤버 삭제
+        member.delete();
+
+        // 리턴
+        return member;
+    }
+
     @Override
     public Member findMemberByMemberId(Long memberId) {
         return memberRepository.findById(memberId)
