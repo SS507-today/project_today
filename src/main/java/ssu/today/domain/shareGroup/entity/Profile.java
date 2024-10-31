@@ -65,14 +65,7 @@ public class Profile {
         this.joinedAt = LocalDateTime.now();
     }
 
-    @OneToMany(mappedBy = "profile")
-    @Builder.Default
-    private List<DiaryTag> diaryTagList = new ArrayList<>();
-
     public void delete() {
-        for (DiaryTag diaryTag : diaryTagList) {
-            diaryTag.delete();
-        }
         this.deletedAt = LocalDateTime.now();
     }
 }

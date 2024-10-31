@@ -32,6 +32,7 @@ import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.ALREADY_JOINED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.CURRENT_WRITER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
+import static ssu.today.global.error.code.ShareGroupErrorCode.NOT_CREATOR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_CREATOR_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_NOT_ACTIVE;
@@ -296,4 +297,26 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         // 5. 공유 그룹 리턴
         return shareGroup;
     }
+
+    @Transactional
+    public ShareGroup deleteShareGroup(Long shareGroupId, Member member) {
+
+        // 1. 공유 그룹이 존재하는지 검증
+        ShareGroup shareGroup = findShareGroup(shareGroupId);
+
+        // 2. 멤버가 해당 공유 그룹에 속한 프로필인지 확인
+        Profile profile = findProfile(shareGroupId, member.getId());
+
+        // 3. CREATOR 권한 확인
+        if (profile.getRole() != Role.CREATOR) {
+            throw new BusinessException(NOT_CREATOR);
+        }
+
+        // 4. 해당 공유그룹 삭제
+        shareGroup.delete();
+
+        // 5. 공유 그룹 리턴
+        return shareGroup;
+    }
+
 }

@@ -24,4 +24,5 @@ public interface ShareGroupService {
     Profile findProfile(Long profileId);
     boolean doesProfileExist(Long shareGroupId, Long memberId);
     ShareGroup leaveShareGroup(Long shareGroupId, Member member);
+    ShareGroup deleteShareGroup(Long shareGroupId, Member member);
 }

@@ -139,4 +139,14 @@ public class ShareGroupController {
         return ResultResponse.of(ShareGroupResultCode.DELETE_SHARE_GROUP,
                 shareGroupConverter.toShareGroupId(deleteShareGroup));
     }
+
+    @DeleteMapping("/{shareGroupId}")
+    @Operation(summary = "그룹 삭제 API", description = "특정 공유그룹을 삭제하는 API입니다.")
+    public ResultResponse<ShareGroupResponse.ShareGroupId> deleteShareGroup(@PathVariable Long shareGroupId, @LoginMember Member member) {
+
+        ShareGroup deleteShareGroup = shareGroupService.deleteShareGroup(shareGroupId, member);
+        return ResultResponse.of(ShareGroupResultCode.DELETE_SHARE_GROUP,
+                shareGroupConverter.toShareGroupId(deleteShareGroup));
+    }
+
 }
