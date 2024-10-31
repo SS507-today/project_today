@@ -62,5 +62,9 @@ public class Profile {
         this.image = member.getImage();
         this.joinedAt = LocalDateTime.now();
     }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
 
