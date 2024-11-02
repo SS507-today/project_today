@@ -104,7 +104,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         // 1. 해당 공유 그룹 조회
         ShareGroup shareGroup = findShareGroup(shareGroupId);
 
-        // 2. PENDING 상태가 아닌 경우 참여 불가
+        // 2. PENDING 상태가 아닌 경우 (이미 그룹 시작했으면) 참여 불가
         if (shareGroup.getStatus() != Status.PENDING) {
             throw new BusinessException(SHARE_GROUP_ALREADY_STARTED);
         }
@@ -132,33 +132,6 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         return profile;  // 새로 생성된 프로필 반환
     }
 
-    /**
-     * 매시간 실행되는 스케줄링 작업: 24시간이 지난 PENDING 상태의 그룹을 ACTIVE로 변경하고 초대 코드를 무효화
-     * */
-    @Scheduled(cron = "30 0 0 * * *") // 매일 자정(00시) 0분 30초마다 스케줄러 실행
-    @Transactional
-    public void updatePendingGroups() {
-
-        // 현재 시간 계산
-        LocalDateTime now = LocalDateTime.now();
-
-        // 현재 시간보다 openAt이 지난 PENDING 상태의 그룹들만 조회
-        List<ShareGroup> pendingGroups = shareGroupRepository.findAllByStatusAndOpenAtBefore(PENDING, now);
-
-        // 조회된 각 그룹에 대해 상태를 ACTIVE로 변경하고 초대 코드를 무효화시킴
-        for (ShareGroup shareGroup : pendingGroups) {
-            updateGroupStatus(shareGroup);
-        }
-    }
-
-    @Transactional
-    public void updateGroupStatus(ShareGroup shareGroup) {
-        shareGroup.setStatus(ACTIVE);  // 상태를 ACTIVE로 변경
-        shareGroup.setInviteCode("NULL");       // 초대 코드를 무효화
-        shareGroupRepository.save(shareGroup); // 변경된 정보를 데이터베이스에 저장
-        shareGroupRepository.flush(); // 강제로 변경사항 커밋 ..
-    }
-
     // openAt 계산 로직
     private LocalDateTime calculateOpenAt(LocalDateTime createdAt) {
 
@@ -184,9 +157,9 @@ public class ShareGroupServiceImpl implements ShareGroupService {
                 .map(profile -> profile.getShareGroup().getId())
                 .collect(Collectors.toList()); // 리스트로 수집
 
-        // 추출한 공유 그룹 ID 리스트를 통해 해당 공유 그룹들을 조회하되, 상태가 ACTIVE인 것만 필터링
+        // 추출한 공유 그룹 ID 리스트를 통해 해당 공유 그룹들을 조회 + pending 인것도 조회.
         // 페이징 처리하여 가져옴
-        return shareGroupRepository.findByIdInAndStatus(shareGroupIdList, Status.ACTIVE, pageable);
+        return shareGroupRepository.findByIdIn(shareGroupIdList, pageable);
     }
 
     @Override
@@ -317,6 +290,12 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // 5. 공유 그룹 리턴
         return shareGroup;
+    }
+
+    // ACTIVE 상태의 공유 그룹 리스트 반환
+    @Override
+    public List<ShareGroup> getActiveShareGroups() {
+        return shareGroupRepository.findByStatus(ACTIVE);
     }
 
 }

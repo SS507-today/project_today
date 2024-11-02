@@ -16,4 +16,5 @@ public class UserDTO {
     private String platform;
     private String refreshToken;
     private String name; //카카오 설정 이름
+    private String nickname;
 }

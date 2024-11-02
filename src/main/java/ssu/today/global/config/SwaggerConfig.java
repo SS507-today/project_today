@@ -21,8 +21,8 @@ public class SwaggerConfig {
                 .in(SecurityScheme.In.HEADER).name("Authorization");
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
-//        Server server = new Server();
-//        server.setUrl("https://api.naoman.site");
+        Server server = new Server();
+        server.setUrl("http://3.36.115.177:8081");
 
         Server local = new Server();
         local.setUrl("http://localhost:8080");
@@ -30,8 +30,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
                 .security(Arrays.asList(securityRequirement))
-//                .info(apiInfo()).servers(List.of(server, local));
-                .info(apiInfo()).servers(List.of(local));
+                .info(apiInfo()).servers(List.of(server, local));
     }
 
     private Info apiInfo() {
