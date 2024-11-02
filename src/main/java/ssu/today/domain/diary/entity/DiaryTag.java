@@ -15,9 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ssu.today.domain.shareGroup.entity.Profile;
-import ssu.today.domain.shareGroup.entity.ShareGroup;
-
-import java.time.LocalDateTime;
+import ssu.today.global.entity.BaseTimeEntity;
 
 @Entity
 @Table(name = "diary_tags")
@@ -25,7 +23,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class DiaryTag {
+public class DiaryTag extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "diary_tag_id")

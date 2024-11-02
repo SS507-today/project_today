@@ -3,6 +3,7 @@ package ssu.today.domain.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,5 +52,15 @@ public class MemberController {
         Member member = memberService.findMemberByMemberId(memberId);
         return ResultResponse.of(MemberResultCode.MEMBER_INFO,
                 memberConverter.toMemberInfo(member));
+    }
+
+    // 회원탈퇴 API
+    @DeleteMapping("")
+    @Operation(summary = "회원 탈퇴 API", description = "서비스에서 회원 탈퇴하는 API 입니다.")
+    public ResultResponse<MemberResponse.MemberId> deleteMember(@LoginMember Member member) {
+
+        Member deleteMember = memberService.deleteMember(member);
+        return ResultResponse.of(MemberResultCode.DELETE_MEMBER,
+                memberConverter.toMemberId(deleteMember));
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -129,4 +130,23 @@ public class ShareGroupController {
         ShareGroupResponse.ShareGroupHomeInfo response = shareGroupService.getShareGroupHome(shareGroupId, member);
         return ResultResponse.of(ShareGroupResultCode.HOME_INFO, response);
     }
+
+    @DeleteMapping("/{shareGroupId}/leave")
+    @Operation(summary = "그룹 탈퇴 API", description = "특정 공유그룹에서 탈퇴하는 API입니다.")
+    public ResultResponse<ShareGroupResponse.ShareGroupId> leaveShareGroup(@PathVariable Long shareGroupId, @LoginMember Member member) {
+
+        ShareGroup deleteShareGroup = shareGroupService.leaveShareGroup(shareGroupId, member);
+        return ResultResponse.of(ShareGroupResultCode.DELETE_SHARE_GROUP,
+                shareGroupConverter.toShareGroupId(deleteShareGroup));
+    }
+
+    @DeleteMapping("/{shareGroupId}")
+    @Operation(summary = "그룹 삭제 API", description = "특정 공유그룹을 삭제하는 API입니다.")
+    public ResultResponse<ShareGroupResponse.ShareGroupId> deleteShareGroup(@PathVariable Long shareGroupId, @LoginMember Member member) {
+
+        ShareGroup deleteShareGroup = shareGroupService.deleteShareGroup(shareGroupId, member);
+        return ResultResponse.of(ShareGroupResultCode.DELETE_SHARE_GROUP,
+                shareGroupConverter.toShareGroupId(deleteShareGroup));
+    }
+
 }

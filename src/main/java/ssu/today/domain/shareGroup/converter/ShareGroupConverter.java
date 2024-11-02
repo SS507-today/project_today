@@ -141,4 +141,11 @@ public class ShareGroupConverter {
                         .build())
                 .build();
     }
+
+    // 그룹 Id만 반환 ( 그룹 삭제 시 반환하는 DTO)
+    public ShareGroupResponse.ShareGroupId toShareGroupId(ShareGroup shareGroup) {
+        return ShareGroupResponse.ShareGroupId.builder()
+                .shareGroupId(shareGroup.getId())
+                .build();
+    }
 }

@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
+import ssu.today.domain.diary.entity.DiaryBundle;
 import ssu.today.global.entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;
@@ -60,9 +61,24 @@ public class ShareGroup extends BaseTimeEntity {
     @Builder.Default
     private List<Profile> profileList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "shareGroup")
+    @Builder.Default
+    private List<DiaryBundle> diaryBundleList = new ArrayList<>();
+
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
+
+
+    public void delete() {
+        for (Profile profile : profileList) {
+            profile.delete();
+        }
+        for (DiaryBundle diaryBundle : diaryBundleList) {
+            diaryBundle.delete();
+        }
+        super.delete();
+    }
 
 }

@@ -18,4 +18,5 @@ public interface MemberService {
     MemberResponse.NickNameInfo setNickName(Member member, String nickName);
     Member findMemberByMemberId(Long memberId);
     Member findMemberByAuthId(Long authId);
+    Member deleteMember(Member member);
 }
