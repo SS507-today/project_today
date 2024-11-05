@@ -151,8 +151,9 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     public Page<ShareGroup> getMyShareGroupList(Member member, Pageable pageable) {
         // 내 멤버id를 통해 내 profile을 가져와서, 해당 profile의 shareGroupId를 추출
         // 이때 삭제되지 않은 프로필만 가져오도록 !!
-        List<Long> shareGroupIdList = profileRepository.findByMemberIdAndDeletedAtIsNull(member.getId())
+        List<Long> shareGroupIdList = profileRepository.findByMemberId(member.getId())
                 .stream()
+                .filter(profile -> profile.getDeletedAt() == null) // 논리 삭제되지 않은 프로필만 필터링
                 .map(profile -> profile.getShareGroup().getId())
                 .collect(Collectors.toList()); // 리스트로 수집
 
@@ -252,6 +253,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     }
 
     @Override
+    @Transactional
     public ShareGroup leaveShareGroup(Long shareGroupId, Member member) {
 
         // 1. 공유 그룹이 존재하는지 검증
@@ -271,6 +273,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     }
 
     @Transactional
+    @Override
     public ShareGroup deleteShareGroup(Long shareGroupId, Member member) {
 
         // 1. 공유 그룹이 존재하는지 검증
