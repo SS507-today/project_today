@@ -19,4 +19,6 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     List<Profile> findByShareGroupId(Long shareGroupId);
     // 특정 프로필 ID 리스트로 프로필 목록 조회
     List<Profile> findByIdIn(List<Long> profileIds);
+    // 논리 삭제 되지 않은 프로필만 조회
+    List<Profile> findByMemberIdAndDeletedAtIsNull(Long memberId);
 }

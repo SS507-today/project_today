@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ssu.today.domain.member.entity.Member;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
 import static ssu.today.domain.shareGroup.entity.Status.PENDING;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
-import static ssu.today.global.error.code.ShareGroupErrorCode.ALREADY_JOINED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.CURRENT_WRITER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.NOT_CREATOR;
@@ -152,7 +150,8 @@ public class ShareGroupServiceImpl implements ShareGroupService {
     @Override
     public Page<ShareGroup> getMyShareGroupList(Member member, Pageable pageable) {
         // 내 멤버id를 통해 내 profile을 가져와서, 해당 profile의 shareGroupId를 추출
-        List<Long> shareGroupIdList = profileRepository.findByMemberId(member.getId())
+        // 이때 삭제되지 않은 프로필만 가져오도록 !!
+        List<Long> shareGroupIdList = profileRepository.findByMemberIdAndDeletedAtIsNull(member.getId())
                 .stream()
                 .map(profile -> profile.getShareGroup().getId())
                 .collect(Collectors.toList()); // 리스트로 수집
