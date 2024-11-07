@@ -102,7 +102,7 @@ public class DiaryController {
     }
 
     // 제일 최신 번들 조회 API
-    @GetMapping
+    @GetMapping("/latest")
     @Operation(summary = "제일 최신 번들 조회 API", description = "제일 최신 번들을 조회해요.")
     public ResultResponse<DiaryResponse.DiaryListInfo> getLatestBundle(@RequestParam Long shareGroupId) {
 
