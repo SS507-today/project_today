@@ -29,6 +29,7 @@ import static ssu.today.domain.shareGroup.entity.Status.ACTIVE;
 import static ssu.today.domain.shareGroup.entity.Status.PENDING;
 import static ssu.today.global.error.code.JwtErrorCode.MEMBER_NOT_FOUND;
 import static ssu.today.global.error.code.ShareGroupErrorCode.CURRENT_WRITER_NOT_FOUND;
+import static ssu.today.global.error.code.ShareGroupErrorCode.MAX_MEMBER_LIMIT_EXCEEDED;
 import static ssu.today.global.error.code.ShareGroupErrorCode.MEMBER_COUNT_ERROR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.NOT_CREATOR;
 import static ssu.today.global.error.code.ShareGroupErrorCode.SHARE_GROUP_ALREADY_STARTED;
@@ -105,6 +106,11 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         // 2. PENDING 상태가 아닌 경우 (이미 그룹 시작했으면) 참여 불가
         if (shareGroup.getStatus() != Status.PENDING) {
             throw new BusinessException(SHARE_GROUP_ALREADY_STARTED);
+        }
+
+        // 2.5 그룹에 참여한 사람이 6명이 넘었으면 참여 불가
+        if (shareGroup.getProfileList().size() >= 6) {
+            throw new BusinessException(MAX_MEMBER_LIMIT_EXCEEDED);
         }
 
         // 3. 이미 그룹에 참여 중인 멤버인지 확인 (중복 가입 방지)
