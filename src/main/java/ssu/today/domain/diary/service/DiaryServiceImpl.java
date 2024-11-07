@@ -135,7 +135,7 @@ public class DiaryServiceImpl implements DiaryService {
      * @param shareGroupId 공유 그룹 ID
      * @return 가장 최신의 DiaryBundle 객체
      */
-    private DiaryBundle findLatestDiaryBundle(Long shareGroupId) {
+    public DiaryBundle findLatestDiaryBundle(Long shareGroupId) {
         // 1. ShareGroup 객체를 가져옴
         ShareGroup shareGroup = shareGroupService.findShareGroup(shareGroupId);
 

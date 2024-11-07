@@ -18,4 +18,5 @@ public interface DiaryService {
     List<Diary> getDiariesByBundle(Long shareGroupId, Long bundleId);
     Page<DiaryBundle> getDiaryBundleList(Long shareGroupId, Pageable pageable);
     List<Profile> getTaggedProfilesList(Long diaryId);
+    DiaryBundle findLatestDiaryBundle(Long shareGroupId);
 }

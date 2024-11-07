@@ -100,4 +100,21 @@ public class DiaryController {
         return ResultResponse.of(DiaryResultCode.DIARY_BUNDLE_LIST,
                 diaryConverter.toPagedDiaryBundleInfo(shareGroupId, shareGroup.getCoverImage(), bundleList));
     }
+
+    // 제일 최신 번들 조회 API
+    @GetMapping
+    @Operation(summary = "제일 최신 번들 조회 API", description = "제일 최신 번들을 조회해요.")
+    public ResultResponse<DiaryResponse.DiaryListInfo> getLatestBundle(@RequestParam Long shareGroupId) {
+
+        // 제일 최신 번들 조회
+        DiaryBundle bundle = diaryService.findLatestDiaryBundle(shareGroupId);
+        Long bundleId = bundle.getId();
+        List<Diary> diaries = bundle.getDiaryList();
+
+        // 2. 컨버터를 사용하여 다이어리 리스트를 변환
+        DiaryResponse.DiaryListInfo response = diaryConverter.toDiaryBundleInfo(bundleId, shareGroupId, diaries);
+
+        // 3. 응답 반환
+        return ResultResponse.of(DiaryResultCode.DIARY_BUNDLE_LIST, response);
+    }
 }
