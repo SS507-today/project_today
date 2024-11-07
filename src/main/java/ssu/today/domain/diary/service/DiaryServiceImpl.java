@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -196,7 +197,15 @@ public class DiaryServiceImpl implements DiaryService {
     public Page<DiaryBundle> getDiaryBundleList(Long shareGroupId, Pageable pageable) {
 
         // 특정 공유 그룹 ID를 통해 다이어리 번들을 페이징하여 가져오기
-        return diaryBundleRepository.findByShareGroupId(shareGroupId, pageable);
+        Page<DiaryBundle> bundles = diaryBundleRepository.findByShareGroupId(shareGroupId, pageable);
+
+        // 다이어리가 포함된 번들만 필터링
+        List<DiaryBundle> filteredBundles = bundles.getContent().stream()
+                .filter(bundle -> !bundle.getDiaryList().isEmpty())
+                .collect(Collectors.toList());
+
+        // 필터링된 번들 리스트를 새롭게 Page 객체로 변환하여 반환
+        return new PageImpl<>(filteredBundles, pageable, filteredBundles.size());
     }
 
 
