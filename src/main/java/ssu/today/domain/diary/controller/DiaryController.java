@@ -83,7 +83,7 @@ public class DiaryController {
 
     // 다이어리 번들의 목록 조회 API
     @GetMapping
-    @Operation(summary = "다이어리 번들 목록 조회 API", description = "특정 공유 그룹의 다이어리 번들을 페이징하여 최신순으로 조회합니다.")
+    @Operation(summary = "지난 다이어리 번들 목록 조회 API", description = "특정 공유 그룹의 지난 다이어리 번들을 페이징하여 최신순으로 조회합니다.")
     @Parameters(value = {
             @Parameter(name = "page", description = "조회할 페이지를 입력해 주세요.(0번부터 시작)"),
             @Parameter(name = "size", description = "한 페이지에 나타낼 공유그룹 개수를 입력해주세요.")

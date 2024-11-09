@@ -196,12 +196,15 @@ public class DiaryServiceImpl implements DiaryService {
     @Transactional(readOnly = true)
     public Page<DiaryBundle> getDiaryBundleList(Long shareGroupId, Pageable pageable) {
 
+        // 최신 번들을 조회하여 제외할 준비
+        DiaryBundle latestBundle = findLatestDiaryBundle(shareGroupId);
+
         // 특정 공유 그룹 ID를 통해 다이어리 번들을 페이징하여 가져오기
         Page<DiaryBundle> bundles = diaryBundleRepository.findByShareGroupId(shareGroupId, pageable);
 
-        // 다이어리가 포함된 번들만 필터링
+        // 최신 번들을 제외하고 다이어리가 포함된 번들만 필터링
         List<DiaryBundle> filteredBundles = bundles.getContent().stream()
-                .filter(bundle -> !bundle.getDiaryList().isEmpty())
+                .filter(bundle -> !bundle.equals(latestBundle) && !bundle.getDiaryList().isEmpty())
                 .collect(Collectors.toList());
 
         // 필터링된 번들 리스트를 새롭게 Page 객체로 변환하여 반환
