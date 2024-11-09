@@ -115,6 +115,6 @@ public class DiaryController {
         DiaryResponse.DiaryListInfo response = diaryConverter.toDiaryBundleInfo(bundleId, shareGroupId, diaries);
 
         // 3. 응답 반환
-        return ResultResponse.of(DiaryResultCode.DIARY_BUNDLE_LIST, response);
+        return ResultResponse.of(DiaryResultCode.DIARY_BUNDLE, response);
     }
 }

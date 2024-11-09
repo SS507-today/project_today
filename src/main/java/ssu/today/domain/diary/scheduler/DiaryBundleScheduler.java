@@ -43,15 +43,13 @@ public class DiaryBundleScheduler {
     // 각 공유 그룹에서 최신 번들을 확인하고 새로운 번들이 필요한 경우 생성하는 함수
     private void createOrUpdateBundleForShareGroup(ShareGroup shareGroup) {
 
-        LocalDateTime now = LocalDateTime.now();
-
         // 1. 제일 최신 번들 가져오기
         DiaryBundle latestBundle = diaryBundleRepository.findFirstByShareGroupOrderByStartedAtDesc(shareGroup)
                 .orElse(null);
 
         // 2. 번들을 새로 생성해야 하는지 확인
-        if (latestBundle == null || shouldCreateNewBundle(latestBundle, shareGroup)) {
-            // 새로운 번들 생성
+        if (latestBundle == null || shouldCreateNewBundle(latestBundle)) {
+            // 첫 번들이거나 번들을 만들 조건이 되면, 새로운 번들 생성
             createNewBundle(shareGroup);
         }
     }
@@ -59,12 +57,9 @@ public class DiaryBundleScheduler {
     // 새로운 번들을 생성하는 함수
     private void createNewBundle(ShareGroup shareGroup) {
 
-        // 인원 수에 따른 시간 계산 (24 * 인원수) 시간마다 생성해야 함
-        int hoursInterval = 24 * shareGroup.getMemberCount();
-
         // 현재 시간을 기준으로 번들의 시작과 종료일 설정
         LocalDateTime startedAt = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);  // 오늘 자정
-        LocalDateTime endedAt = startedAt.plusDays(shareGroup.getMemberCount() - 1);
+        LocalDateTime endedAt = startedAt.plusDays(shareGroup.getProfileList().size());
 
         DiaryBundle newBundle = DiaryBundle.builder()
                 .shareGroup(shareGroup)
@@ -78,10 +73,9 @@ public class DiaryBundleScheduler {
     /**
      * 새로운 번들을 생성해야 하는지 여부를 결정하는 함수
      * @param latestBundle 가장 최신 번들
-     * @param shareGroup 공유 그룹
      * @return 새로운 번들을 생성해야 하면 true를 반환
      */
-    private boolean shouldCreateNewBundle(DiaryBundle latestBundle, ShareGroup shareGroup) {
+    private boolean shouldCreateNewBundle(DiaryBundle latestBundle) {
         // 최신 번들의 종료일이 지났으면 새로운 번들을 생성해야 함
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(latestBundle.getEndedAt());
@@ -98,7 +92,7 @@ public class DiaryBundleScheduler {
         // 공유 그룹의 시작일을 기준으로 몇 번째 날인지 계산 (년도가 아니라 오픈일 기준이라, 년도변경시 초기화되는 문제 해결)
         LocalDate startDate = shareGroup.getOpenAt().toLocalDate();
         int daysSinceStart = (int) ChronoUnit.DAYS.between(startDate, LocalDate.now());
-        int dayOfBundle = daysSinceStart % shareGroup.getMemberCount();  // 나머지 연산으로 몇 번째 날인지 계산
+        int dayOfBundle = daysSinceStart % profileList.size();  // 나머지 연산으로 몇 번째 날인지 계산
 
         // 각 멤버의 차례를 설정 (하루에 한 명씩 돌아가면서 isMyTurn 설정)
         for (int i = 0; i < profileList.size(); i++) {
