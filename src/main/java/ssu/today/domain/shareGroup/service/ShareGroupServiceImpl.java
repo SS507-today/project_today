@@ -109,7 +109,7 @@ public class ShareGroupServiceImpl implements ShareGroupService {
         }
 
         // 2.5 그룹에 참여한 사람이 6명이 넘었으면 참여 불가
-        if (shareGroup.getProfileList().size() >= 6) {
+        if (shareGroup.getProfileList().size() > shareGroup.getMemberCount()) {
             throw new BusinessException(MAX_MEMBER_LIMIT_EXCEEDED);
         }
 
