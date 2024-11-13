@@ -123,6 +123,7 @@ public class ShareGroupConverter {
     public ShareGroupResponse.ShareGroupHomeInfo toMyTurnInfo(ShareGroup shareGroup) {
         return ShareGroupResponse.ShareGroupHomeInfo.builder()
                 .isMyTurn(true)
+                .name(shareGroup.getName())
                 .shareGroupDetailInfo(toShareGroupDetailInfo(shareGroup)) //컨버터 재사용
                 .build();
     }
@@ -132,6 +133,7 @@ public class ShareGroupConverter {
         return ShareGroupResponse.ShareGroupHomeInfo
                 .builder()
                 .isMyTurn(false)
+                .name(currentWriter.getShareGroup().getName())
                 .currentWriter(ShareGroupResponse.CurrentWriter
                         .builder()
                         .profileId(currentWriter.getId())

@@ -111,6 +111,7 @@ public abstract class ShareGroupResponse {
         private boolean isMyTurn;
         private ShareGroupDetailInfo shareGroupDetailInfo;  // 내 차례일 때 사용
         private CurrentWriter currentWriter;    // 내 차례가 아닐 때 사용
+        private String name;
     }
 
     // 현재 작성자 정보
