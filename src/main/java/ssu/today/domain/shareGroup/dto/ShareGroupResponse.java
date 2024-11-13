@@ -64,6 +64,7 @@ public abstract class ShareGroupResponse {
         private Long shareGroupId;
         private Status status;
         private LocalDateTime openAt;
+        private String name;
     }
 
     @Getter

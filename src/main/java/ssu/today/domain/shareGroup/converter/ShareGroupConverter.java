@@ -77,6 +77,7 @@ public class ShareGroupConverter {
                 .shareGroupId(shareGroup.getId())
                 .status(shareGroup.getStatus())
                 .openAt(shareGroup.getOpenAt())
+                .name(shareGroup.getName())
                 .build();
     }
 
