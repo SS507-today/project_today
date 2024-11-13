@@ -6,13 +6,16 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ssu.today.domain.diary.service.DiaryService;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.shareGroup.converter.ProfileConverter;
+import ssu.today.domain.shareGroup.dto.ProfileRequest;
 import ssu.today.domain.shareGroup.dto.ProfileResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
 import ssu.today.domain.shareGroup.service.ShareGroupService;
@@ -23,6 +26,7 @@ import ssu.today.global.security.annotation.LoginMember;
 import java.util.List;
 
 import static ssu.today.global.result.code.DiaryResultCode.TAGGED_MEMBERS_LIST;
+import static ssu.today.global.result.code.ProfileResultCode.UPDATE_PROFILE;
 
 @RestController
 @RequiredArgsConstructor
@@ -96,5 +100,17 @@ public class ProfileController {
         // 변환된 프로필 정보 반환
         return ResultResponse.of(TAGGED_MEMBERS_LIST,
                 profileConverter.toTaggedProfileList(diaryId, taggedProfileList));
+    }
+
+
+    // 공유그룹의 프로필 정보 수정 API
+    @PatchMapping("/{profileId}")
+    public ResultResponse<ProfileResponse.UpdateProfile> updateProfile(@PathVariable Long profileId,
+                                                                       @RequestBody ProfileRequest.UpdateProfile request) {
+
+        Profile updatedProfile = shareGroupService.updateProfile(profileId, request);
+
+        return ResultResponse.of(UPDATE_PROFILE,
+                profileConverter.toUpdateProfile(updatedProfile));
     }
 }

@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ssu.today.domain.shareGroup.entity.Role;
-import ssu.today.domain.shareGroup.entity.Status;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,5 +41,13 @@ public abstract class ProfileResponse {
     public static class TaggedProfileList {
         private Long diaryId;
         private List<TaggedProfile> taggedMembersList;
+    }
+
+    @Getter
+    @Builder
+    public static class UpdateProfile {
+        private Long shareGroupId;
+        private Long profileId;
+        private LocalDateTime updatedAt;
     }
 }

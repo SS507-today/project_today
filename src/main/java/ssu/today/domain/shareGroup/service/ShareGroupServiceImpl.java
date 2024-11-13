@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ssu.today.domain.member.entity.Member;
 import ssu.today.domain.member.repository.MemberRepository;
 import ssu.today.domain.shareGroup.converter.ShareGroupConverter;
+import ssu.today.domain.shareGroup.dto.ProfileRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
@@ -276,6 +277,19 @@ public class ShareGroupServiceImpl implements ShareGroupService {
 
         // 5. 공유 그룹 리턴
         return shareGroup;
+    }
+
+    @Transactional
+    @Override
+    public Profile updateProfile(Long profileId, ProfileRequest.UpdateProfile request) {
+
+        Profile myProfile = findProfile(profileId);
+
+        myProfile.setProfileNickName(request.getNickName());
+        myProfile.setDescription(request.getDescription());
+        myProfile.setUpdatedAt(LocalDateTime.now());
+
+        return profileRepository.save(myProfile);
     }
 
     @Transactional

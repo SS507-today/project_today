@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ssu.today.domain.shareGroup.dto.ProfileResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,17 @@ public class ProfileConverter {
                 .builder()
                 .diaryId(diaryId)
                 .taggedMembersList(taggedProfileList)
+                .build();
+    }
+
+    // 프로필 업데이트
+
+    public ProfileResponse.UpdateProfile toUpdateProfile(Profile profile) {
+        return ProfileResponse.UpdateProfile
+                .builder()
+                .shareGroupId(profile.getShareGroup().getId())
+                .profileId(profile.getId())
+                .updatedAt(profile.getUpdatedAt())
                 .build();
     }
 }

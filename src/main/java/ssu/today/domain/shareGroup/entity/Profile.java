@@ -54,6 +54,8 @@ public class Profile {
     private ShareGroup shareGroup;
     @Column(name = "joined_at")
     private LocalDateTime joinedAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 

@@ -3,6 +3,7 @@ package ssu.today.domain.shareGroup.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ssu.today.domain.member.entity.Member;
+import ssu.today.domain.shareGroup.dto.ProfileRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupRequest;
 import ssu.today.domain.shareGroup.dto.ShareGroupResponse;
 import ssu.today.domain.shareGroup.entity.Profile;
@@ -26,4 +27,5 @@ public interface ShareGroupService {
     ShareGroup leaveShareGroup(Long shareGroupId, Member member);
     ShareGroup deleteShareGroup(Long shareGroupId, Member member);
     List<ShareGroup> getActiveShareGroups();
+    Profile updateProfile(Long profileId, ProfileRequest.UpdateProfile request);
 }
