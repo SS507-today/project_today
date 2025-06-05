@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ssu.today.domain.member.entity.UserRole;
 import ssu.today.domain.member.repository.MemberRepository;
-import ssu.today.domain.member.service.MemberService;
 import ssu.today.global.security.filter.JwtFilter;
 import ssu.today.global.security.handler.ExceptionHandlerFilter;
 import ssu.today.global.security.service.JwtTokenService;
