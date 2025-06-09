@@ -22,7 +22,7 @@ public class SwaggerConfig {
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
         Server server = new Server();
-        server.setUrl("http://52.78.190.185:8081");
+        server.setUrl("https://gojap.codns.com");
 
         Server local = new Server();
         local.setUrl("http://localhost:8080");
