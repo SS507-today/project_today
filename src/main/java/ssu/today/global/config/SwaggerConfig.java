@@ -35,8 +35,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("오늘은 서비스 API")
-                .description("그 시절 레트로 감성을 담은 교환일기 서비스, 오늘은입니다.")
+                .title("일기장터 서비스 API")
+                .description("그 시절 레트로 감성을 담은 교환일기 서비스, 일기장터 입니다.")
                 .version("1.0.0");
     }
 }

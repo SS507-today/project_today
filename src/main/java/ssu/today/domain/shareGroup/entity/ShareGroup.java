@@ -82,3 +82,4 @@ public class ShareGroup extends BaseTimeEntity {
     }
 
 }
+
